@@ -33,4 +33,8 @@ def course_details(request, course_id):
     return render_to_response('kurs/course_details.html',
                               {'user': request.user,
                                'course': course,})
-    
+
+@login_required()
+def apply_for_course(request, course_id):
+    pass
+

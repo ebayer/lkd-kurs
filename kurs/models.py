@@ -35,6 +35,38 @@ class Course(models.Model):
     def __unicode__(self):
         return self.display_name
 
+class Application(models.Model):
+    class Meta:
+        verbose_name = "Başvuru"
+        verbose_name_plural = "Başvurular"
+        unique_together = (("person", "course"),)
+
+    person = models.ForeignKey(User, related_name='application_users')
+    course = models.ForeignKey(Course)
+    application_date = models.DateTimeField()
+    approved = models.BooleanField(default=False)
+    approved_by = models.ForeignKey(User, related_name='application_approver', blank=True, null=True)
+    approve_date = models.DateTimeField(blank=True, null=True)
+
+    def __unicode__(self):
+        return self.person.username + " - " + self.course.display_name
+
+class ApplicationChoices(models.Model):
+    class Meta:
+        verbose_name = "Tercih"
+        verbose_name_plural = "Tercihler"
+        unique_together = (("person", "event", "choice_number"),
+                           ("person", "event", "choice"))
+
+    person = models.ForeignKey(User)
+    event = models.ForeignKey(Event)
+    last_update = models.DateTimeField()
+    choice_number = models.IntegerField()
+    choice = models.ForeignKey(Course)
+
+    def __unicode__(self):
+        return self.person.username + " - " + self.event.display_name + " - " + self.choice.display_name
+
 class UserComment(models.Model):
     class Meta:
         verbose_name = "Yorum"
