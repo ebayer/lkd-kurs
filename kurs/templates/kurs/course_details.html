@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+
+{% if course %}
+	<h1>{{ course.display_name }}</h1>
+	<h3>Açıklama</h3>
+	<p>{{ course.description }}</p>
+
+	<h3>Başlangıç Tarihi</h3>
+	<p>{{ course.start_date }}</p>
+	
+	<h3>Bitiş Tarihi</h3>
+	<p>{{ course.end_date }}</p>
+	
+	<h3>Son Başvuru Tarihi</h3>
+	<p>{{ course.change_allowed_date }}</p>
+	
+	<h3>Kurs Yükümlülükleri</h3>
+	<p>{{ course.agreement }}</p>
+	
+	{% if course.is_open %}
+		<h2>Başvur</h2>
+	{% else %}
+		<h2>Bu kurs başvuruya açık değil.</h2>
+	{% endif %}
+
+{% else %}
+	<p>Böyle bir kurs yok.</p>
+{% endif %}
+		
+{% endblock %}

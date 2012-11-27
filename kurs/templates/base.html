@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<meta name="description" content="description"/>
+<meta name="keywords" content="keywords"/> 
+<meta name="author" content="author"/> 
+<link rel="stylesheet" type="text/css" href="/static/kurs/css/default.css" media="screen"/>
+<title>LKD Kurs Kayıt Yazılımı</title>
+</head>
+
+<body>
+
+<div class="container">
+	
+	<div class="main">
+
+		<div class="header">
+		
+			<div class="title">
+				<h1>LKD Kurs Kayıt Yazılımı</h1>
+			</div>
+
+		</div>
+		
+		<div class="content">	
+			<div class="item">
+				{% block content %} {% endblock %}
+			</div>
+		</div>
+		
+		<div class="sidenav">
+			
+		{% if user.is_authenticated %}
+			<h1>Hoşgeldiniz, {{ user.username }}</h1>
+			<ul>
+				<li><a href="/kurs/">Ana Sayfa</a></li>
+				<li><a href="/kurs/events/">Etkinlikler</a></li>
+				<li><a href="/accounts/{{ user.username }}">Profil</a></li>
+				<li><a href="/accounts/signout">Çıkış</a></li>
+			</ul>
+
+			{% if user.is_staff %}
+			<h1>Admin Pages</h1>
+			<ul>
+				<li><a href="">consequat molestie</a></li>
+			</ul>
+			{% endif %}
+			
+		{% else %}
+			<h1>Giriş yapmadınız.</h1>
+			<ul>
+				<li><a href="/kurs/">Ana Sayfa</a></li>
+				<li><a href="/kurs/events/">Etkinlikler</a></li>
+				<li><a href="/accounts/signin/">Giriş</a></li>
+				<li><a href="/accounts/signup/">Kayıt Ol</a></li>
+			</ul>
+		{% endif %}
+
+		</div>
+	
+		<div class="clearer"><span></span></div>
+
+	</div>
+
+	<div class="footer">&copy; 2006 <a href="index.html">Website.com</a>. Valid <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> &amp; <a href="http://validator.w3.org/check?uri=referer">XHTML</a>. Template design by <a href="http://templates.arcsin.se">Arcsin</a>
+	</div>
+
+</div>
+
+</body>
+
+</html>

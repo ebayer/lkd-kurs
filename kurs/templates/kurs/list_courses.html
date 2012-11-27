@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<h1>{{ event }} - Kurslar</h1>
+				
+{% if course_list %}
+<ul>
+	{% for course in course_list %}
+		<li><a href="/kurs/kurs/{{ course.id }}">{{ course.display_name }}</a></li>
+	{% endfor %}
+</ul>
+{% else %}
+	<p>Hiç kurs yok.</p>
+{% endif %}
+		
+{% endblock %}
