@@ -10,3 +10,6 @@ easy_thumbnails-1.1
 
 Postgresql 9.1
 
+To avoid changing example settings.py file in repo, run the following command
+git update-index --assume-unchanged lkd/settings.py
+
