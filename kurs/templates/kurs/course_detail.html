@@ -21,7 +21,11 @@
 	<p>{{ course.agreement }}</p>
 	
 	{% if course.is_open %}
-		<h2><a href="/kurs/kurs/{{ course.id }}/basvur">Başvur</a></h2>
+		{% if previous_applications == 0 %}
+			<h2><a href="/kurs/kurs/{{ course.id }}/basvur">Başvur</a></h2>
+		{% else %}
+			<h2>Bu kursa başvuramazsınız.</h2>
+		{% endif %}
 	{% else %}
 		<h2>Bu kurs başvuruya açık değil.</h2>
 	{% endif %}

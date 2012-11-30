@@ -8,6 +8,7 @@ from kurs.models import *
 from kurs.forms import ApplicationAgreement, ApplicationChoice
 from django.utils import timezone
 from django.http import HttpResponseRedirect
+from django.views.generic import DetailView
 
 def index(request):
     return render_to_response('kurs/index.html',
@@ -83,5 +84,17 @@ def apply_for_course(request, course_id):
 @login_required
 def edit_choices(request, event_id):
     return render_to_response('kurs/hata.html', {
-            'mesaj': event_id,
+            'mesaj': "event_id=" + event_id,
             }, context_instance=RequestContext(request))
+
+class CourseDetailView(DetailView):
+    context_object_name = "course"
+    model = Course
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(CourseDetailView, self).get_context_data(**kwargs)
+        # Add extra context
+        # kullanıcının bu event'de başvurduğu kurs var mı kontrol et
+        context['previous_applications'] = Application.objects.filter(course__event=self.object.event).count()
+        return context
