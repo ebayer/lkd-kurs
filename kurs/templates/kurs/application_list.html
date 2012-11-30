@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<h1>Başvurular</h1>
+				
+{% if application_list %}
+<table>
+	<tr align="center">
+			<th>Etkinlik</th>
+			<th>Kurs</th>
+			<th>Başvuru tarihi</th>
+			<th>Onay</th>
+			<th>Onay_tarihi</th>
+	</tr>
+	{% for application in application_list %}
+		<tr align="center">
+			<td>{{ application.course.event }}</td>
+			<td>{{ application.course }}</td>
+			<td>{{ application.application_date }}</td>
+			<td>{{ application.approved }}</td>
+			<td>{{ application.approve_date }}</td>
+		</tr>
+	{% endfor %}
+</table>
+{% else %}
+	<p>Hiç etkinlik yok.</p>
+{% endif %}
+		
+{% endblock %}

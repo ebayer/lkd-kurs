@@ -13,4 +13,5 @@ urlpatterns = patterns('kurs.views',
     url(r'^etkinlik/(?P<event_id>\d+)/tercihler/$', 'edit_choices'),
     url(r'^kurs/(?P<pk>\d+)/$', CourseDetailView.as_view()),
     url(r'^kurs/(?P<course_id>\d+)/basvur$', 'apply_for_course'),
+    url(r'^basvurular/$', ListView.as_view(queryset=Application.objects.order_by('course__event', '-application_date'))),
 )
