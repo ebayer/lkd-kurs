@@ -96,5 +96,6 @@ class CourseDetailView(DetailView):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         # Add extra context
         # kullanıcının bu event'de başvurduğu kurs var mı kontrol et
-        context['previous_applications'] = Application.objects.filter(course__event=self.object.event).count()
+        context['previous_applications'] = Application.objects.filter(course__event = self.object.event).count()
+        context['has_applied'] = Application.objects.filter(course = self.object, person = self.request.user).count()
         return context
