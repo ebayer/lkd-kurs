@@ -12,7 +12,7 @@ class Event(models.Model):
         verbose_name_plural = "Etkinlikler"
     
     display_name = models.CharField('Görünen İsim', max_length=200)
-    allowed_choice_num = models.IntegerField('Bu etkinlik için kullanıcıların yapabileceği tercih adedi')
+    allowed_choice_num = models.IntegerField('Bu etkinlik için kullanıcıların yapabileceği tercih adedi', default=2)
     venue = models.CharField('Etkinlik mekanı', max_length=200)
     
     def __unicode__(self):
