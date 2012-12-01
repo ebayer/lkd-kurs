@@ -65,6 +65,12 @@ class CourseDetailView(DetailView):
 class ApplicationChoicesList(ListView):
     template_name = "kurs/applicationchoices_list.html"
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(ApplicationChoicesList, self).get_context_data(**kwargs)
+        context["event_id"] = self.kwargs['event_id']
+        return context
+
     def get_queryset(self):
         return ApplicationChoices.objects.filter(person = self.request.user).filter(event = self.kwargs['event_id']).order_by("choice_number")
 
@@ -127,4 +133,12 @@ class ApplicationDeleteView(DeleteView):
 
     def get_queryset(self):
         return Application.objects.filter(person = self.request.user).filter(id = self.kwargs['pk'])
-    # Fixme: kurs başvurusunu silince tercihleri de sil
+
+    def delete(self, request, *args, **kwargs):
+        # Fixme: kullanıcıya düzgün bir mesaj dön
+        # success_message = "jhjhjk"
+
+        application = Application.objects.get(person = self.request.user, id = self.kwargs['pk'])
+        applicationchoices = ApplicationChoices.objects.filter(person = self.request.user).filter(event = application.course.event)
+        applicationchoices.delete()
+        return DeleteView.delete(self, request, *args, **kwargs)
