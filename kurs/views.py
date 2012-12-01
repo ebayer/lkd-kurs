@@ -104,12 +104,6 @@ class CourseDetailView(DetailView):
             context['has_applied'] = Application.objects.filter(course = self.object, person = self.request.user).count()
         return context
 
-class ApplicationChoicesList(ListView):
-    template_name = "kurs/applicationchoices_list.html"
-
-    def get_queryset(self):
-        return ApplicationChoices.objects.filter(person = self.request.user).filter(event = self.kwargs['event_id'])
-
 @login_required
 def edit_choices(request, event_id):
 #    choices = [("1","1"), ("2","2")]
