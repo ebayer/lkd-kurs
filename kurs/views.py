@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.formtools.wizard.views import SessionWizardView
 from kurs.models import *
-from kurs.forms import ApplicationAgreement, ApplicationChoiceForm
+from kurs.forms import ApplicationChoiceForm
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.views.generic import DetailView
@@ -66,7 +66,7 @@ class ApplicationChoicesList(ListView):
     template_name = "kurs/applicationchoices_list.html"
 
     def get_queryset(self):
-        return ApplicationChoices.objects.filter(person = self.request.user).filter(event = self.kwargs['event_id'])
+        return ApplicationChoices.objects.filter(person = self.request.user).filter(event = self.kwargs['event_id']).order_by("choice_number")
 
 @login_required
 def edit_choices(request, event_id):
@@ -114,11 +114,8 @@ def edit_choices(request, event_id):
                 record.save()
                 choice_number += 1
 
-            return render_to_response('kurs/hata.html', {
-            'mesaj': EditChoicesFormSet.cleaned_data,
-            }, context_instance=RequestContext(request))
+            return HttpResponseRedirect("/kurs/etkinlik/" + event_id + "/tercihler/")
     else:
-        # Fixme: iş bitince düzgün bir yere redirect et
         return render_to_response('kurs/applicationchoices_edit.html',
                               {'formset': formset(initial=initial)},
                               context_instance=RequestContext(request))
