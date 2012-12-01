@@ -1,0 +1,21 @@
+TODO:
+* blacklist/graylist
+* izin yazısı yükleme
+* admin kurs/red kabul
+* admin kurs başvuru ve kabul listeleri
+* kullanıcı ve admin işlemleri kayıt tutulması
+* Base template'in yeniden yazılması
+* registration veya userena kullanımına karar verilmesi
+
+BUGS:
+* Aynı etkinlikte birden fazla kursa başvururken kursların tarihi kontrol edilmeli
+* Kayıt/Değişiklik/iptal işlemlerinde kullanıcıya düzgün hata mesajları dönmeli
+* Kurs kaydını iptal ederken kaydın onaylanmış olmaması gerekli
+
+ADMIN:
+* Kullancılar listesinde çalıştığı kurum bilgisi görünmeli
+* Ekinlikler listesinde Mekan da görünmeli ve mekana göre gruplanmış olmalı
+* Kurslar listesinde Etkinlik, başlangıç ve bitiş tarihleri görünmeli, etkinliğe göre gruplanmış olmalı
+* Başvurular listesi kullanıcıya ve event'e göre sıralanmış olmalı, başvurunun durumu da görünmeli
+* Tercihler listesi listesi kullanıcıya ve event'e göre sıralanmış olmalı, tercih sıraları görünmeli
+
