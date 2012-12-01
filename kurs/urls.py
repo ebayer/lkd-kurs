@@ -13,5 +13,5 @@ urlpatterns = patterns('kurs.views',
     url(r'^kurs/(?P<pk>\d+)/$', CourseDetailView.as_view()),
     url(r'^kurs/(?P<course_id>\d+)/basvur/$', 'apply_for_course'),
     url(r'^basvurular/(?P<pk>\d+)/iptal/$', login_required(ApplicationDeleteView.as_view())),
-    url(r'^basvurular/$', login_required(ListView.as_view(queryset = Application.objects.order_by('course__event', '-application_date')))),
+    url(r'^basvurular/$', login_required(ListView.as_view(queryset = Application.objects.order_by('-application_date', 'course__event')))),
 )
