@@ -10,7 +10,6 @@ TODO:
 BUGS:
 * Aynı etkinlikte birden fazla kursa başvururken kursların tarihi kontrol edilmeli
 * Kayıt/Değişiklik/iptal işlemlerinde kullanıcıya düzgün hata mesajları dönmeli
-* Kurs kaydını iptal ederken kaydın onaylanmış olmaması gerekli
 
 ADMIN:
 * Kullancılar listesinde çalıştığı kurum bilgisi görünmeli

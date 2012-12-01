@@ -137,8 +137,12 @@ class ApplicationDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         # Fixme: kullanıcıya düzgün bir mesaj dön
         # success_message = "jhjhjk"
-
         application = Application.objects.get(person = self.request.user, id = self.kwargs['pk'])
-        applicationchoices = ApplicationChoices.objects.filter(person = self.request.user).filter(event = application.course.event)
-        applicationchoices.delete()
-        return DeleteView.delete(self, request, *args, **kwargs)
+        if not application.approved:
+            applicationchoices = ApplicationChoices.objects.filter(person = self.request.user).filter(event = application.course.event)
+            applicationchoices.delete()
+            return DeleteView.delete(self, request, *args, **kwargs)
+        else:
+            return render_to_response('kurs/hata.html', {
+                        'mesaj': "Onaylanmış bir başvuruyu iptal edemezsiniz.",
+                        }, context_instance=RequestContext(request))

@@ -23,7 +23,7 @@
 			<td>{{ application.application_date|date:"d.m.Y H:i" }}</td>
 			<td>{{ application.approved|default:"" }}</td>
 			<td>{{ application.approve_date|date:"d.m.Y H:i" }}</td>
-			{% if application.course.is_open %}
+			{% if application.course.is_open and not application.approved %}
 				<td><a href="/kurs/basvurular/{{ application.id }}/iptal/">İptal</a></td>
 				<td><a href="/kurs/etkinlik/{{ application.course.event.id }}/tercihler/">Tercihler</a></td>
 			{% else %}
