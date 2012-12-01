@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<h1>Başvuru Tercihleri</h1>
+<form method="post" action="">{% csrf_token %}
+    {{ formset.management_form }}
+    <table>
+        {% for form in formset %}
+        {{ form }}
+        {% endfor %}
+    </table>
+    <input type="submit" value="Kaydet" />
+</form>
+		
+{% endblock %}

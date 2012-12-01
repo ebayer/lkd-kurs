@@ -7,25 +7,34 @@
 				
 {% if application_list %}
 <table>
-	<tr align="center">
+	<tr align="left">
 			<th>Etkinlik</th>
 			<th>Kurs</th>
 			<th>Başvuru tarihi</th>
 			<th>Onay</th>
-			<th>Onay_tarihi</th>
+			<th>Onay tarihi</th>
+			<th>&nbsp</th>
+			<th>&nbsp</th>
 	</tr>
 	{% for application in application_list %}
 		<tr align="center">
 			<td>{{ application.course.event }}</td>
 			<td>{{ application.course }}</td>
-			<td>{{ application.application_date }}</td>
-			<td>{{ application.approved }}</td>
-			<td>{{ application.approve_date }}</td>
+			<td>{{ application.application_date|date:"d.m.Y H:i" }}</td>
+			<td>{{ application.approved|default:"" }}</td>
+			<td>{{ application.approve_date|date:"d.m.Y H:i" }}</td>
+			{% if application.course.is_open %}
+				<td><a href="/kurs/basvurular/{{ application.id }}/iptal/">İptal</a></td>
+				<td><a href="/kurs/etkinlik/{{ application.course.event.id }}/tercihler/">Tercihler</a></td>
+			{% else %}
+				<td>&nbsp</td>
+				<td>&nbsp</a></td>
+			{% endif %}
 		</tr>
 	{% endfor %}
 </table>
 {% else %}
-	<p>Hiç etkinlik yok.</p>
+	<p>Hiç başvuru yok.</p>
 {% endif %}
 		
 {% endblock %}
