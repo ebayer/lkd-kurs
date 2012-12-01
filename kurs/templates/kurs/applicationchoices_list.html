@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<h1>Başvuru Tercihleri</h1>
+				
+{% if object_list %}
+<table>
+	<tr align="left">
+			<th>#</th>
+			<th>Tercih</th>
+			<th>Son güncelleme</th>
+			<th>&nbsp</th>
+	</tr>
+	{% for applicationchoice in object_list %}
+		<tr align="center">
+			<td>{{ applicationchoice.choice_number }}</td>
+			<td>{{ applicationchoice.choice }}</td>
+			<td>{{ applicationchoice.last_update }}</td>
+			<td>İptal</td>
+		</tr>
+	{% endfor %}
+</table>
+{% else %}
+	<p>Bu etkinlikte hiç tercih yapmadınız.</p>
+{% endif %}
+		
+{% endblock %}
