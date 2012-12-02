@@ -9,7 +9,7 @@ TODO:
 
 BUGS:
 * Aynı etkinlikte birden fazla kursa başvururken kursların tarihi kontrol edilmeli
-* Kayıt/Değişiklik/iptal işlemlerinde kullanıcıya düzgün hata mesajları dönmeli
+* Userprofile nesnesinde telefon alanı local flavor kullanmalı
 
 ADMIN:
 * Kullancılar listesinde çalıştığı kurum bilgisi görünmeli

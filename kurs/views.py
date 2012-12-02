@@ -13,6 +13,7 @@ from django.views.generic.list import ListView
 from django.forms.formsets import formset_factory
 from django.utils.functional import curry
 from django.views.generic.edit import DeleteView
+from django.contrib import messages
 
 def index(request):
     return render_to_response('kurs/index.html',
@@ -20,8 +21,18 @@ def index(request):
                               context_instance=RequestContext(request))
     
 def list_courses(request, event_id):
-    event = get_object_or_404(Event, pk=event_id)
-    course_list = get_list_or_404(Course, event=event_id)
+    try:
+        event = Event.objects.get(pk=event_id)
+    except Event.DoesNotExist:
+        messages.error(request, "Böyle bir etkinlik yok")
+        return render_to_response('kurs/hata.html',
+            context_instance=RequestContext(request))
+    try:
+        course_list = Course.objects.filter(event=event_id)
+    except Course.DoesNotExist:
+        messages.error(request, "Kurs nesnelerini alırken hata oluştu")
+        return render_to_response('kurs/hata.html',
+            context_instance=RequestContext(request))
     
     return render_to_response('kurs/list_courses.html',
                               {'event': event.display_name,
@@ -30,17 +41,23 @@ def list_courses(request, event_id):
 
 @login_required
 def apply_for_course(request, course_id):
-    course = get_object_or_404(Course, pk=course_id)
+    try:
+        course = Course.objects.get(pk=course_id)
+    except Course.DoesNotExist:
+        messages.error(request, "Böyle bir kurs yok")
+        return render_to_response('kurs/hata.html',
+            context_instance=RequestContext(request))
 
     # Fixme: Başvuru yaparken tarihleri kontrol et
     previous_applications = Application.objects.filter(course__event=course.event).count()
     if previous_applications == 0:
         # save application to the database
         Application(person = request.user, course = course, application_date = timezone.now()).save()
+        messages.info(request, "Başvurunuz kaydedildi")
         return HttpResponseRedirect('/kurs/etkinlik/' + str(course.event.id) + '/tercihler/')
     else:
+        messages.error(request, "Bu etkinlikte sadece bir kursa kaydolabilirsiniz.")
         return render_to_response('kurs/hata.html',
-                              {'mesaj': 'Bu etkinlikte sadece bir kursa kaydolabilirsiniz.'},
                               context_instance=RequestContext(request))
 
 
@@ -93,9 +110,9 @@ def edit_choices(request, event_id):
     try:
         applied_course = Application.objects.get(person = request.user, course__event = event_id)
     except Application.DoesNotExist:
-            return render_to_response('kurs/hata.html', {
-                        'mesaj': "Bu etkinlikte hiçbir kursa başvurmadınız",
-                        }, context_instance=RequestContext(request))
+        messages.error(request, "Bu etkinlikte hiçbir kursa başvurmadınız")
+        return render_to_response('kurs/hata.html',
+                    context_instance=RequestContext(request))
 
     courses = Course.objects.filter(event = event_id).exclude(id = applied_course.course.id)
     for course in courses:
@@ -106,6 +123,7 @@ def edit_choices(request, event_id):
     if request.method == 'POST':
         EditChoicesFormSet = formset(request.POST, request.FILES)
         if EditChoicesFormSet.is_valid():
+            # Fixme: tüm tercihlerin geçerli olduğunu kontrol et
             if not previous_choices.count() == 0:
                 previous_choices.delete()
 
@@ -120,6 +138,7 @@ def edit_choices(request, event_id):
                 record.save()
                 choice_number += 1
 
+            messages.info(request, "Tercihleriniz kaydedildi")
             return HttpResponseRedirect("/kurs/etkinlik/" + event_id + "/tercihler/")
     else:
         return render_to_response('kurs/applicationchoices_edit.html',
@@ -141,11 +160,13 @@ class ApplicationDeleteView(DeleteView):
         if not application.approved:
             applicationchoices = ApplicationChoices.objects.filter(person = self.request.user).filter(event = application.course.event)
             applicationchoices.delete()
+            messages.info(request, "Başvuru tercihleriniz silindi")
+            messages.info(request, "Başvurunuz iptal edildi")
             return DeleteView.delete(self, request, *args, **kwargs)
         else:
-            return render_to_response('kurs/hata.html', {
-                        'mesaj': "Onaylanmış bir başvuruyu iptal edemezsiniz.",
-                        }, context_instance=RequestContext(request))
+            messages.error(request, "Onaylanmış bir başvuruyu iptal edemezsiniz")
+            return render_to_response('kurs/hata.html',
+                        context_instance=RequestContext(request))
 
 def upload_permit(request, application_id):
     if request.method == 'POST':
@@ -161,6 +182,7 @@ def upload_permit(request, application_id):
             except ApplicationPermit.DoesNotExist:
                 applicationpermit = ApplicationPermit(application = application, file = request.FILES['file'])
                 applicationpermit.save()
+            messages.info(request, "İzin yazınız kaydedildi")
             return HttpResponseRedirect('/kurs/basvurular/')
     else:
         form = ApplicationPermitForm()
