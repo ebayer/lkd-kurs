@@ -11,6 +11,7 @@
 			<th>Etkinlik</th>
 			<th>Kurs</th>
 			<th>Başvuru tarihi</th>
+			<th colspan="2">İzin yazısı</th>
 			<th>Onay</th>
 			<th>Onay tarihi</th>
 			<th>&nbsp</th>
@@ -21,14 +22,19 @@
 			<td>{{ application.course.event }}</td>
 			<td>{{ application.course }}</td>
 			<td>{{ application.application_date|date:"d.m.Y H:i" }}</td>
+			{% if application.applicationpermit.file %}
+				<td><a href="{{ application.applicationpermit.file.url }}">Göster</a></td>
+				<td><a href="/kurs/basvurular/{{ application.id }}/izin/">Yenisini yükle</a></td>
+			{% else %}
+				<td colspan="2"><a href="/kurs/basvurular/{{ application.id }}/izin/">Yükle</a></td>
+			{% endif %}
 			<td>{{ application.approved|default:"" }}</td>
 			<td>{{ application.approve_date|date:"d.m.Y H:i" }}</td>
 			{% if application.course.is_open and not application.approved %}
 				<td><a href="/kurs/basvurular/{{ application.id }}/iptal/">İptal</a></td>
 				<td><a href="/kurs/etkinlik/{{ application.course.event.id }}/tercihler/">Tercihler</a></td>
 			{% else %}
-				<td>&nbsp</td>
-				<td>&nbsp</a></td>
+				<td colspan="2">&nbsp</td>
 			{% endif %}
 		</tr>
 	{% endfor %}

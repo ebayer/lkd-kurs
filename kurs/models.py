@@ -51,6 +51,15 @@ class Application(models.Model):
     def __unicode__(self):
         return self.person.username + " - " + self.course.display_name
 
+class ApplicationPermit(models.Model):
+    class Meta:
+        verbose_name = "İzin Yazısı"
+        verbose_name_plural = "İzin Yazıları"
+
+    application = models.OneToOneField(Application, unique=True)
+    file = models.FileField(upload_to = "kurs/application_permits/%Y/%m/%d")
+    upload_date = models.DateTimeField(auto_now = True, auto_now_add = True)
+
 class ApplicationChoices(models.Model):
     class Meta:
         verbose_name = "Tercih"

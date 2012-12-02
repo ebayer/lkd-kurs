@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<h1>İzin yazısı yükleme</h1>
+<form method="post" action="" enctype="multipart/form-data">{% csrf_token %}
+    {{ form.management_form }}
+    <table>
+        {{ form }}
+    </table>
+    <input type="submit" value="Kaydet" />
+</form>
+		
+{% endblock %}

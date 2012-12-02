@@ -7,3 +7,6 @@ class ApplicationChoiceForm(forms.Form):
         choices = kwargs.pop('choices')
         super(ApplicationChoiceForm, self).__init__(*args, **kwargs)
         self.fields["choice"] = forms.ChoiceField(choices = choices)
+
+class ApplicationPermitForm(forms.Form):
+    file = forms.FileField()

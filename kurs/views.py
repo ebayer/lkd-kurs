@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.contrib.formtools.wizard.views import SessionWizardView
 from kurs.models import *
-from kurs.forms import ApplicationChoiceForm
+from kurs.forms import ApplicationChoiceForm, ApplicationPermitForm
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponseServerError
 from django.views.generic import DetailView
@@ -146,3 +146,24 @@ class ApplicationDeleteView(DeleteView):
             return render_to_response('kurs/hata.html', {
                         'mesaj': "Onaylanmış bir başvuruyu iptal edemezsiniz.",
                         }, context_instance=RequestContext(request))
+
+def upload_permit(request, application_id):
+    if request.method == 'POST':
+        form = ApplicationPermitForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = Application.objects.get(id = application_id)
+            try:
+                applicationpermit = ApplicationPermit.objects.get(application__id = application_id)
+                # this removes the file from fs but does not call object.save()
+                applicationpermit.file.delete()
+                applicationpermit.file = request.FILES["file"]
+                applicationpermit.save()
+            except ApplicationPermit.DoesNotExist:
+                applicationpermit = ApplicationPermit(application = application, file = request.FILES['file'])
+                applicationpermit.save()
+            return HttpResponseRedirect('/kurs/basvurular/')
+    else:
+        form = ApplicationPermitForm()
+    return render_to_response('kurs/applicationpermit_form.html',
+                              {'form': form},
+                              context_instance=RequestContext(request))
