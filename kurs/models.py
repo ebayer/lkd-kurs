@@ -60,9 +60,6 @@ class ApplicationPermit(models.Model):
     file = models.FileField(upload_to = "kurs/application_permits/%Y/%m/%d")
     upload_date = models.DateTimeField(auto_now = True, auto_now_add = True)
 
-    def __unicode__(self):
-        return "%s - %s" % (self.application, self.file)
-
 class ApplicationChoices(models.Model):
     class Meta:
         verbose_name = "Tercih"

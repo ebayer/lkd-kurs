@@ -10,6 +10,8 @@ TODO:
 BUGS:
 * Aynı etkinlikte birden fazla kursa başvururken kursların tarihi kontrol edilmeli
 * Userprofile nesnesinde telefon alanı local flavor kullanmalı
+* İzin yazısı yükleme işlemlerinde encoding hatası:
+'ascii' codec can't decode byte 0xc5 in position 37: ordinal not in range(128). You passed in <ApplicationPermit: [Bad Unicode data]> (<class 'kurs.models.ApplicationPermit'>)
 
 ADMIN:
 * Kullancılar listesinde çalıştığı kurum bilgisi görünmeli
