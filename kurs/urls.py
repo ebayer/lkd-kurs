@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from django.views.generic import ListView
 from kurs.models import *
-from kurs.views import CourseDetailView, ApplicationDeleteView, ApplicationChoicesList
+from kurs.views import CourseDetailView, ApplicationDeleteView, ApplicationChoicesList, ApplicationList
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns('kurs.views',
@@ -14,5 +14,5 @@ urlpatterns = patterns('kurs.views',
     url(r'^kurs/(?P<course_id>\d+)/basvur/$', 'apply_for_course'),
     url(r'^basvurular/(?P<pk>\d+)/iptal/$', login_required(ApplicationDeleteView.as_view())),
     url(r'^basvurular/(?P<application_id>\d+)/izin/$', 'upload_permit'),
-    url(r'^basvurular/$', login_required(ListView.as_view(queryset = Application.objects.order_by('-application_date', 'course__event')))),
+    url(r'^basvurular/$', login_required(ApplicationList.as_view())),
 )

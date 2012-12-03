@@ -82,9 +82,15 @@ class CourseDetailView(DetailView):
         # Add extra context
         # kullanıcının bu event'de başvurduğu kurs var mı kontrol et
         if self.request.user.is_authenticated():
-            context['previous_applications'] = Application.objects.filter(course__event = self.object.event).count()
+            context['previous_applications'] = Application.objects.filter(person = self.request.user).filter(course__event = self.object.event).count()
             context['has_applied'] = Application.objects.filter(course = self.object, person = self.request.user).count()
         return context
+
+class ApplicationList(ListView):
+    template_name = "kurs/application_list.html"
+
+    def get_queryset(self):
+        return Application.objects.filter(person = self.request.user).order_by('-application_date', 'course__event')
 
 class ApplicationChoicesList(ListView):
     template_name = "kurs/applicationchoices_list.html"
