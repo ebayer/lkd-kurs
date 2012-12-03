@@ -162,6 +162,23 @@ h1,h2,h3 {
 	background: #FFF;
 	margin-bottom: 8px;
 }
+
+.content .error {
+	background-color: #FF0040;
+}
+
+.content .error p {
+	text-align: center;
+}
+
+.content .info {
+	background-color: #F4FA58;
+}
+
+.content .info p {
+	text-align: center;
+}
+
 .content .descr {
 	color: #333;
 	margin-bottom: 6px;

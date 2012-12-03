@@ -26,18 +26,15 @@
 		</div>
 		
 		<div class="content">	
+			{% if messages %}
+    			{% for message in messages %}
+    				<div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+    					<p><strong>{{ message }}</strong></p>
+    				</div>
+    			{% endfor %}
+			{% endif %}
+
 			<div class="item">
-			
-				<div class="error">
-					{% if messages %}
-						<div class="messages">
-    						{% for message in messages %}
-    							<p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-    						{% endfor %}
-						</div>
-					{% endif %}
-				</div>
-				
 				{% block content %} {% endblock %}
 			</div>
 		</div>
