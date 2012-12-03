@@ -53,7 +53,7 @@ def apply_for_course(request, course_id):
             context_instance=RequestContext(request))
 
     # Fixme: Başvuru yaparken tarihleri kontrol et
-    previous_applications = Application.objects.filter(course__event=course.event).count()
+    previous_applications = Application.objects.filter(person = request.user).filter(course__event=course.event).count()
     if previous_applications == 0:
         # save application to the database
         application = Application(person = request.user, course = course, application_date = timezone.now())
