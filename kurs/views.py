@@ -176,13 +176,16 @@ class ApplicationDeleteView(DeleteView):
                             request.user, request.META["REMOTE_ADDR"])
             applicationchoices.delete()
             messages.info(request, "Başvuru tercihleriniz silindi")
-            applicationpermit = ApplicationPermit.objects.get(application = application)
-            _log_action("İzin yazısı silindi: %s" % applicationpermit,
+            try:
+                applicationpermit = ApplicationPermit.objects.get(application = application)
+                _log_action("İzin yazısı silindi: %s" % applicationpermit,
                     request.user, request.META["REMOTE_ADDR"])
-            # this removes the file from fs but does not call object.save()
-            applicationpermit.file.delete()
-            applicationpermit.delete()
-            messages.info(request, "Terich yazınız silindi")
+                # this removes the file from fs but does not call object.save()
+                applicationpermit.file.delete()
+                applicationpermit.delete()
+                messages.info(request, "Terich yazınız silindi")
+            except ApplicationPermit.DoesNotExist:
+                pass
             messages.info(request, "Başvurunuz iptal edildi")
             _log_action("Başvuru silindi: %s" % application,
                     request.user, request.META["REMOTE_ADDR"])
