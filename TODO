@@ -2,7 +2,7 @@ TODO:
 * blacklist/graylist
 * admin kurs/red kabul
 * admin kurs başvuru ve kabul listeleri
-* kullanıcı ve admin işlemleri kayıt tutulması
+* admin işlemleri kayıt tutulması
 * Base template'in yeniden yazılması
 * registration veya userena kullanımına karar verilmesi
 * ApplicationChoice ve UserComment date alanları auto_now olmalı

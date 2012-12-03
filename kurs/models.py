@@ -33,7 +33,7 @@ class Course(models.Model):
     end_date = models.DateField('Kurs bitiş tarihi')
     
     def __unicode__(self):
-        return self.display_name
+        return "%s (%s)" % (self.display_name, self.event.display_name)
 
 class Application(models.Model):
     class Meta:
@@ -49,7 +49,7 @@ class Application(models.Model):
     approve_date = models.DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
-        return self.person.username + " - " + self.course.display_name
+        return "%s -> %s" % (self.person.username, self.course)
 
 class ApplicationPermit(models.Model):
     class Meta:
@@ -59,6 +59,9 @@ class ApplicationPermit(models.Model):
     application = models.OneToOneField(Application, unique=True)
     file = models.FileField(upload_to = "kurs/application_permits/%Y/%m/%d")
     upload_date = models.DateTimeField(auto_now = True, auto_now_add = True)
+
+    def __unicode__(self):
+        return "%s - %s" % (self.application, self.file)
 
 class ApplicationChoices(models.Model):
     class Meta:
@@ -74,7 +77,7 @@ class ApplicationChoices(models.Model):
     choice = models.ForeignKey(Course)
 
     def __unicode__(self):
-        return self.person.username + " - " + self.event.display_name + " - " + self.choice.display_name
+        return "%s -> %s -> %s - %s" %(self.person.username, self.event, self.choice_number, self.choice)
 
 class UserComment(models.Model):
     class Meta:
@@ -84,6 +87,9 @@ class UserComment(models.Model):
     user = models.ForeignKey(User)
     comment = models.TextField()
     date = models.DateTimeField()
+
+    def __unicode__(self):
+        return "%s - %s - %s" %(self.user.username, self.comment, self.date)
 
 class UserProfile(UserenaBaseProfile):
     user = models.OneToOneField(User, unique=True, verbose_name=_('user'), related_name='my_profile')
@@ -97,3 +103,14 @@ def create_user_profile(sender, instance, created, **kwargs):
         UserProfile.objects.get_or_create(user=instance)
 
 post_save.connect(create_user_profile, sender=User)
+
+class ActionsLog(models.Model):
+    class Meta:
+        verbose_name = "Değişiklik kaydı"
+        verbose_name_plural = "Değişiklik kayıtları"
+
+    date = models.DateTimeField(auto_now = True)
+    message = models.CharField(max_length = 200)
+
+    def __unicode__(self):
+        return "%s - %s" %(self.date, self.message)

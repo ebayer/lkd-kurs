@@ -15,6 +15,10 @@ from django.utils.functional import curry
 from django.views.generic.edit import DeleteView
 from django.contrib import messages
 
+def _log_action(message, username, REMOTE_ADDR):
+    log = ActionsLog(message = "%s. request.user='%s' , request.META['REMOTE_ADDR']='%s'" % (message, username, REMOTE_ADDR))
+    log.save()
+
 def index(request):
     return render_to_response('kurs/index.html',
                               {},
@@ -52,7 +56,10 @@ def apply_for_course(request, course_id):
     previous_applications = Application.objects.filter(course__event=course.event).count()
     if previous_applications == 0:
         # save application to the database
-        Application(person = request.user, course = course, application_date = timezone.now()).save()
+        application = Application(person = request.user, course = course, application_date = timezone.now())
+        application.save()
+        _log_action("Başvuru yapıldı: %s" % application,
+                    request.user, request.META["REMOTE_ADDR"])
         messages.info(request, "Başvurunuz kaydedildi")
         return HttpResponseRedirect('/kurs/etkinlik/' + str(course.event.id) + '/tercihler/')
     else:
@@ -125,6 +132,9 @@ def edit_choices(request, event_id):
         if EditChoicesFormSet.is_valid():
             # Fixme: tüm tercihlerin geçerli olduğunu kontrol et
             if not previous_choices.count() == 0:
+                for prev_choices in previous_choices:
+                    _log_action("Tercih silindi: %s" % prev_choices,
+                                request.user, request.META["REMOTE_ADDR"])
                 previous_choices.delete()
 
             last_update = timezone.now()
@@ -136,6 +146,8 @@ def edit_choices(request, event_id):
                                             choice_number = choice_number,
                                             choice = Course.objects.get(id = choices["choice"]))
                 record.save()
+                _log_action("Tercih yapıldı: %s" % record,
+                    request.user, request.META["REMOTE_ADDR"])
                 choice_number += 1
 
             messages.info(request, "Tercihleriniz kaydedildi")
@@ -159,9 +171,21 @@ class ApplicationDeleteView(DeleteView):
         application = Application.objects.get(person = self.request.user, id = self.kwargs['pk'])
         if not application.approved:
             applicationchoices = ApplicationChoices.objects.filter(person = self.request.user).filter(event = application.course.event)
+            for prev_choices in applicationchoices:
+                _log_action("Tercih silindi: %s" % prev_choices,
+                            request.user, request.META["REMOTE_ADDR"])
             applicationchoices.delete()
             messages.info(request, "Başvuru tercihleriniz silindi")
+            applicationpermit = ApplicationPermit.objects.get(application = application)
+            _log_action("İzin yazısı silindi: %s" % applicationpermit,
+                    request.user, request.META["REMOTE_ADDR"])
+            # this removes the file from fs but does not call object.save()
+            applicationpermit.file.delete()
+            applicationpermit.delete()
+            messages.info(request, "Terich yazınız silindi")
             messages.info(request, "Başvurunuz iptal edildi")
+            _log_action("Başvuru silindi: %s" % application,
+                    request.user, request.META["REMOTE_ADDR"])
             return DeleteView.delete(self, request, *args, **kwargs)
         else:
             messages.error(request, "Onaylanmış bir başvuruyu iptal edemezsiniz")
@@ -175,13 +199,19 @@ def upload_permit(request, application_id):
             application = Application.objects.get(id = application_id)
             try:
                 applicationpermit = ApplicationPermit.objects.get(application__id = application_id)
+                _log_action("İzin yazısı silindi: %s" % applicationpermit,
+                    request.user, request.META["REMOTE_ADDR"])
                 # this removes the file from fs but does not call object.save()
                 applicationpermit.file.delete()
                 applicationpermit.file = request.FILES["file"]
                 applicationpermit.save()
+                _log_action("İzin yazısı yüklendi: %s" % applicationpermit,
+                    request.user, request.META["REMOTE_ADDR"])
             except ApplicationPermit.DoesNotExist:
                 applicationpermit = ApplicationPermit(application = application, file = request.FILES['file'])
                 applicationpermit.save()
+                _log_action("İzin yazısı yüklendi: %s" % applicationpermit,
+                    request.user, request.META["REMOTE_ADDR"])
             messages.info(request, "İzin yazınız kaydedildi")
             return HttpResponseRedirect('/kurs/basvurular/')
     else:
