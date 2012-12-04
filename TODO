@@ -14,7 +14,6 @@ BUGS:
 'ascii' codec can't decode byte 0xc5 in position 37: ordinal not in range(128). You passed in <ApplicationPermit: [Bad Unicode data]> (<class 'kurs.models.ApplicationPermit'>)
 
 ADMIN:
-* Kullancılar listesinde çalıştığı kurum bilgisi görünmeli
 * Ekinlikler listesinde Mekan da görünmeli ve mekana göre gruplanmış olmalı
 * Kurslar listesinde Etkinlik, başlangıç ve bitiş tarihleri görünmeli, etkinliğe göre gruplanmış olmalı
 * Başvurular listesi kullanıcıya ve event'e göre sıralanmış olmalı, başvurunun durumu da görünmeli
