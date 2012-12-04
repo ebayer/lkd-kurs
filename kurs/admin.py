@@ -24,12 +24,17 @@ class ApplicationPermitInline(admin.StackedInline):
     extra=0
 
 class ApplicationAdmin(admin.ModelAdmin):
-    list_display = ('person', 'course', 'application_date', 'approved', 'approved_by', 'approve_date')
+    list_display = ('person', 'course', 'application_date', 'has_applicationpermit', 'approved', 'approved_by', 'approve_date')
     search_fields = ['person__username', 'course__display_name', 'approved_by__username']
     list_filter = ['course__event', 'approved', 'application_date']
     date_hierarchy = 'application_date'
     ordering = ['person__id', '-application_date']
     inlines = [ApplicationPermitInline]
+
+    def has_applicationpermit(self, obj):
+        return True if obj.applicationpermit else False
+    has_applicationpermit.boolean = True
+    has_applicationpermit.short_description = 'İzin Yazısı'
 
 class ApplicationChoicesAdmin(admin.ModelAdmin):
     list_display = ('person', 'event', 'choice_number', 'choice', 'last_update')

@@ -19,4 +19,6 @@ ADMIN:
 * Kurslar listesinde Etkinlik, başlangıç ve bitiş tarihleri görünmeli, etkinliğe göre gruplanmış olmalı
 * Başvurular listesi kullanıcıya ve event'e göre sıralanmış olmalı, başvurunun durumu da görünmeli
 * Tercihler listesi listesi kullanıcıya ve event'e göre sıralanmış olmalı, tercih sıraları görünmeli
+* Admin course_list izin yazısına göre filtreleme
+* Admin course_edit izin yazısını silerken applicationpermit.save() çağırmalı
 
