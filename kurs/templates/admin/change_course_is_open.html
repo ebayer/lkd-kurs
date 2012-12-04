@@ -1,0 +1,34 @@
+{% extends "admin/base_site.html" %}
+{% load i18n l10n %}
+{% load url from future %}
+{% load admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=app_label %}">{{ app_label|capfirst|escape }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; {% trans 'Edit multiple objects' %}
+</div>
+{% endblock %}
+
+{% block content %}
+    <p>Seçili {{ objects_name }} nesnelerini değiştirmek istediğinizden emin misiniz? Aşağıdaki nesnelerin başvuru yapılabilme statüsü değişecek</p>
+    {% for editable_object in editable_objects %}
+        <ul>{{ editable_object|unordered_list }}</ul>
+    {% endfor %}
+    <form action="" method="post">{% csrf_token %}
+    <div>
+    {% for obj in queryset %}
+    <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk|unlocalize }}" />
+    {% endfor %}
+    <select name="status">
+		<option value="True">Başvuruya aç</option>
+		<option value="False">Başvuruya kapat</option>
+    </select>
+    <input type="hidden" name="action" value="change_course_is_open" />
+    <input type="hidden" name="post" value="yes" />
+    <input type="submit" value="{% trans "Yes, I'm sure" %}" />
+    </div>
+    </form>
+{% endblock %}

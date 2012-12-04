@@ -4,6 +4,53 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from kurs.models import Event, Course, UserComment, Application, ApplicationChoices, ApplicationPermit, UserProfile, ActionsLog
+from django.utils.encoding import force_unicode
+from django.contrib.admin import helpers
+from django.template.response import TemplateResponse
+from django.contrib.admin.util import model_ngettext
+from django.utils.translation import ugettext as _
+
+def change_course_is_open(modeladmin, request, queryset):
+    # got from django.contrib.admin.actions
+    opts = modeladmin.model._meta
+    app_label = opts.app_label
+
+    if request.POST.get('post'):
+        n = queryset.count()
+        if n:
+            queryset.update(is_open = True if request.POST['status'] == 'True' else False)
+            modeladmin.message_user(request, _("Successfully changed %(count)d %(items)s.") % {
+                "count": n, "items": model_ngettext(modeladmin.opts, n)
+            })
+        # Return None to display the change list page again.
+        return None
+
+    title = _("Are you sure?")
+
+    if len(queryset) == 1:
+        objects_name = force_unicode(opts.verbose_name)
+    else:
+        objects_name = force_unicode(opts.verbose_name_plural)
+
+    courses = queryset.all()
+    editable_objects = []
+    for course in courses:
+        editable_objects.append(course.__unicode__())
+
+    context = {
+        "title": title,
+        "objects_name": objects_name,
+        "editable_objects": [editable_objects],
+        'queryset': queryset,
+        "opts": opts,
+        "app_label": app_label,
+        'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
+    }
+
+    # Display the confirmation page
+    return TemplateResponse(request, 'admin/change_course_is_open.html',
+    context, current_app=modeladmin.admin_site.name)
+change_course_is_open.short_description = "Seçili kursların başvuru statüsünü değiştir"
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('display_name', 'venue', 'allowed_choice_num')
@@ -15,6 +62,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_filter = ['event']
     date_hierarchy = 'start_date'
     ordering = ['-event__id', 'id']
+    actions = [change_course_is_open]
 
 class ApplicationPermitInline(admin.StackedInline):
     model = ApplicationPermit
