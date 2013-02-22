@@ -46,9 +46,9 @@
 			<ul>
 				<li><a href="/kurs/">Ana Sayfa</a></li>
 				<li><a href="/kurs/etkinlik/">Etkinlikler</a></li>
-				<li><a href="/accounts/{{ user.username }}">Profil</a></li>
+				<li><a href="/profile/">Profil</a></li>
 				<li><a href="/kurs/basvurular/">Önceki Başvurularım</a></li>
-				<li><a href="/accounts/signout">Çıkış</a></li>
+				<li><a href="/accounts/logout">Çıkış</a></li>
 			</ul>
 
 			{% if user.is_staff %}
@@ -63,8 +63,8 @@
 			<ul>
 				<li><a href="/kurs/">Ana Sayfa</a></li>
 				<li><a href="/kurs/etkinlik/">Etkinlikler</a></li>
-				<li><a href="/accounts/signin/">Giriş</a></li>
-				<li><a href="/accounts/signup/">Kayıt Ol</a></li>
+				<li><a href="/accounts/login/">Giriş</a></li>
+				<li><a href="/accounts/register/">Kayıt Ol</a></li>
 			</ul>
 		{% endif %}
 

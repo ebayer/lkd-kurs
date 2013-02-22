@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Profile Details{% endblock %}
+
+{% block content %}
+<h1>Profile for {{ user }}
+(<a href="{% url profiles.views.edit_profile %}">{% trans "Edit" %}</a>
+<a href="{% url auth_password_change %}">{% trans "Change Password" %}</a>)</h1>
+
+<p>İsim: {{ profile.user.first_name }}</p>
+<p>Soyisim: {{ profile.user.last_name }}</p>
+<p>E-posta: {{ profile.user.email }}</p>
+<p>Çalıştığı Kurum: {{ profile.company }}</p>
+<p>Adres: {{ profile.contact_address|linebreaksbr|escape }}</p>
+<p>Cep telefonu: {{ profile.mobile }}</p>
+<p>Ev telefonu: {{ profile.phone }}</p>
+
+
+{% endblock content %}

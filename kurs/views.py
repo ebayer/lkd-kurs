@@ -228,3 +228,10 @@ def upload_permit(request, application_id):
     return render_to_response('kurs/applicationpermit_form.html',
                               {'form': form},
                               context_instance=RequestContext(request))
+
+def profile_detail(request):
+    profile_obj = request.user.get_profile()
+
+    return render_to_response('kurs/profile_detail.html',
+                              { 'profile': profile_obj },
+                              context_instance=RequestContext(request))

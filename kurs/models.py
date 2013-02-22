@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
-from userena.models import UserenaBaseProfile
+from registration.signals import user_registered
 
 class Event(models.Model):
     class Meta:
@@ -88,18 +88,30 @@ class UserComment(models.Model):
     def __unicode__(self):
         return "%s - %s - %s" %(self.user.username, self.comment, self.date)
 
-class UserProfile(UserenaBaseProfile):
+class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, verbose_name=_('user'), related_name='my_profile')
     company = models.CharField('Çalıştığı Kurum',max_length=30)
     contact_address = models.TextField("İletişim Adresi")
     mobile = models.CharField('Cep Telefonu (2165554433)',max_length=10)
     phone = models.CharField('Ev Telefonu (2165554433)', max_length=10)
-    
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.get_or_create(user=instance)
 
-post_save.connect(create_user_profile, sender=User)
+def create_profile(sender, user, request, **kwargs):
+    user.first_name=request.POST['first_name']
+    user.last_name=request.POST['last_name']
+    user.save()
+    (profile, created) = UserProfile.objects.get_or_create(user=user)
+    profile.company = request.POST['company']
+    profile.contact_address = request.POST['contact_address']
+    profile.mobile = request.POST['mobile']
+    profile.phone = request.POST['phone']
+    profile.save()
+    
+user_registered.connect(create_profile)
+
+def get_absolute_url(self):
+        return ('profiles_profile_detail', (), { 'username': self.user.username })
+
+get_absolute_url = models.permalink(get_absolute_url)
 
 class ActionsLog(models.Model):
     class Meta:
