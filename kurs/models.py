@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 from registration.signals import user_registered
+from datetime import datetime
+from django.utils.timezone import now as tz_aware_now
 
 class Event(models.Model):
     class Meta:
@@ -32,6 +34,12 @@ class Course(models.Model):
     start_date = models.DateField('Kurs başlangıç tarihi')
     end_date = models.DateField('Kurs bitiş tarihi')
     
+    @property
+    def can_be_applied(self):
+        if self.is_open and self.change_allowed_date >= tz_aware_now():
+            return True
+        return False
+
     def __unicode__(self):
         return "%s (%s)" % (self.display_name, self.event.display_name)
 

@@ -19,7 +19,7 @@
 	<h3>Kurs Yükümlülükleri</h3>
 	<p>{{ course.agreement|linebreaks|escape }}</p>
 	
-	{% if course.is_open %}
+	{% if course.can_be_applied %}
 		{% if has_applied == 1 %}
 			<h2>Bu kursa başvurdunuz.</a></h2>
 		{% elif previous_applications == 0 %}
