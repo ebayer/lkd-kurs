@@ -135,7 +135,8 @@ class UserCommentInline(admin.StackedInline):
 # Define a new User admin
 class UserAdmin(UserAdmin):
     inlines = (UserProfileInline, UserCommentInline)
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_userprofile_company')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'get_userprofile_company')
+    list_filter = ['is_active', 'is_staff',]
 
     def get_userprofile_company(self, obj):
         return ("%s" % (obj.my_profile.company))
