@@ -69,7 +69,7 @@ class ApplicationChoices(models.Model):
 
     person = models.ForeignKey(User)
     event = models.ForeignKey(Event)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(auto_now = True, auto_now_add = True)
     choice_number = models.IntegerField()
     choice = models.ForeignKey(Course)
 
@@ -83,7 +83,7 @@ class UserComment(models.Model):
         
     user = models.ForeignKey(User)
     comment = models.TextField()
-    date = models.DateTimeField()
+    date = models.DateTimeField(auto_now = True, auto_now_add = True)
 
     def __unicode__(self):
         return "%s - %s - %s" %(self.user.username, self.comment, self.date)

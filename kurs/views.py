@@ -143,12 +143,10 @@ def edit_choices(request, event_id):
                                 request.user, request.META["REMOTE_ADDR"])
                 previous_choices.delete()
 
-            last_update = timezone.now()
             choice_number = 1
             for choices in EditChoicesFormSet.cleaned_data:
                 record = ApplicationChoices(person = request.user,
                                             event = Event.objects.get(id = event_id),
-                                            last_update = last_update,
                                             choice_number = choice_number,
                                             choice = Course.objects.get(id = choices["choice"]))
                 record.save()
