@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load url from future %}
 
 {% block content %}
 
@@ -28,7 +27,9 @@
 		{% elif previous_applications > 0 %}
 			<h2>Bu etkinlikte zaten bir kursa başvurdunuz.</h2>
 		{% else %}
-			<h2>Bu kursa başvurmak için <a href="/accounts/signin/">Giriş Yap</a> veya <a href="/accounts/signup/">Hesap Al</a></h2>
+			<h2>Bu kursa başvurmak için
+			<a href="{% url auth_login %}?next={% firstof request.path '/' %}">Giriş Yap</a>
+			 veya <a href="{% url registration_register %}">Kayıt Ol</a></h2>
 		{% endif %}
 	{% else %}
 		<h2>Bu kurs başvuruya açık değil.</h2>
