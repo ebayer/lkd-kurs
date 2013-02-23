@@ -9,6 +9,7 @@ from django.contrib.admin import helpers
 from django.template.response import TemplateResponse
 from django.contrib.admin.util import model_ngettext
 from django.utils.translation import ugettext as _
+from django.contrib.admin import SimpleListFilter
 
 def change_course_is_open(modeladmin, request, queryset):
     # got from django.contrib.admin.actions
@@ -71,10 +72,27 @@ class ApplicationPermitInline(admin.StackedInline):
     verbose_name = 'İzin Yazısı'
     extra=0
 
+class HasApplicationPermitFilter(SimpleListFilter):
+    title = _('izin yazısı')
+    parameter_name = 'permit'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('1', 'Var'),
+            ('0', 'Yok'),
+        ]
+    def queryset(self, request, queryset):
+        if self.value() == '0':
+            return queryset.filter(applicationpermit=None)
+        if self.value() == '1':
+            return queryset.filter(applicationpermit=True)
+        else:
+            return queryset
+
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ('person', 'course', 'application_date', 'has_applicationpermit', 'approved', 'approved_by', 'approve_date')
     search_fields = ['person__username', 'course__display_name', 'approved_by__username']
-    list_filter = ['course__event', 'approved', 'application_date']
+    list_filter = ['course__event', 'approved', 'application_date', HasApplicationPermitFilter]
     date_hierarchy = 'application_date'
     ordering = ['person__id', '-application_date']
     inlines = [ApplicationPermitInline]
