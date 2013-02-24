@@ -6,6 +6,9 @@ from django.utils.translation import ugettext as _
 from registration.signals import user_registered
 from django.utils.timezone import now as tz_aware_now
 from django.db.models.signals import pre_delete
+from django import forms
+from django.template.defaultfilters import filesizeformat
+import magic
 
 class Event(models.Model):
     class Meta:
@@ -67,13 +70,74 @@ def delete_application_choices(sender, **kwargs):
 # whenever an application gets deleted
 pre_delete.connect(delete_application_choices, sender=Application, dispatch_uid="unique_identifier")
 
+# Validate the permit file accoring to mime-type
+# got from
+# https://github.com/kaleidos/django-validated-file/blob/master/validatedfile/__init__.py
+class ValidatedFileField(models.FileField):
+    """
+    Same as FileField, but you can specify:
+        * content_types - list containing allowed content_types.
+        Example: ['application/pdf', 'image/jpeg']
+        * max_upload_size - a number indicating the maximum file
+        size allowed for upload.
+            2.5MB - 2621440
+            5MB - 5242880
+            10MB - 10485760
+            20MB - 20971520
+            50MB - 5242880
+            100MB 104857600
+            250MB - 214958080
+            500MB - 429916160
+    """
+    def __init__(self, *args, **kwargs):
+        self.content_types = kwargs.pop("content_types", [])
+        self.max_upload_size = kwargs.pop("max_upload_size", 0)
+        super(ValidatedFileField, self).__init__(*args, **kwargs)
+
+    def clean(self, *args, **kwargs):
+        data = super(ValidatedFileField, self).clean(*args, **kwargs)
+        file = data.file
+
+        if self.content_types:
+            content_type_headers = getattr(file, 'content_type', '')
+
+            mg = magic.Magic(mime = True)
+            content_type_magic = mg.from_buffer(file.read(1024))
+            file.seek(0)
+
+            if not content_type_headers in self.content_types or not content_type_magic in self.content_types:
+                raise forms.ValidationError(_('Files of type %(type)s are not supported.') % {'type': content_type_magic})
+
+        if self.max_upload_size:
+            if file._size > self.max_upload_size:
+                raise forms.ValidationError(_('Files of size greater than %(max_size)s are not allowed. Your file is %(current_size)s') %
+                                            {'max_size': filesizeformat(self.max_upload_size),
+                                             'current_size': filesizeformat(file._size)})
+
+        return data
+
+
 class ApplicationPermit(models.Model):
     class Meta:
         verbose_name = "İzin Yazısı"
         verbose_name_plural = "İzin Yazıları"
 
     application = models.OneToOneField(Application, unique=True)
-    file = models.FileField(upload_to = "kurs/application_permits/%Y/%m/%d")
+    file = ValidatedFileField(upload_to = "kurs/application_permits/%Y/%m/%d",
+                              max_upload_size = 5242880,
+                              content_types = ['application/msword',
+                                               'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                               'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+                                               'application/x-bzip2',
+                                               'application/x-gzip',
+                                               'application/x-tar',
+                                               'application/zip',
+                                               'application/x-compressed-zip',
+                                               'application/pdf',
+                                               'application/postscript',
+                                               'application/vnd.oasis.opendocument.text',
+                                               'application/x-vnd.oasis.opendocument.text',
+                                               ])
     upload_date = models.DateTimeField(auto_now = True, auto_now_add = True)
 
 class ApplicationChoices(models.Model):

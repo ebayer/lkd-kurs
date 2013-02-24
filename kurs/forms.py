@@ -12,8 +12,10 @@ class ApplicationChoiceForm(forms.Form):
         super(ApplicationChoiceForm, self).__init__(*args, **kwargs)
         self.fields["choice"] = forms.ChoiceField(choices = choices)
 
-class ApplicationPermitForm(forms.Form):
-    file = forms.FileField()
+class ApplicationPermitForm(forms.ModelForm):
+    class Meta:
+        model = ApplicationPermit
+        fields = ["file"]
 
 class ProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
