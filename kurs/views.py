@@ -178,8 +178,6 @@ class ApplicationDeleteView(DeleteView):
                 applicationpermit = ApplicationPermit.objects.get(application = application)
                 _log_action("İzin yazısı silindi: %s" % applicationpermit,
                     request.user, request.META["REMOTE_ADDR"])
-                # this removes the file from fs but does not call object.save()
-                applicationpermit.file.delete()
                 applicationpermit.delete()
                 messages.info(request, "İzin yazınız silindi")
             except ApplicationPermit.DoesNotExist:
@@ -201,10 +199,6 @@ def upload_permit(request, application_id):
             application = Application.objects.get(id = application_id)
             try:
                 applicationpermit = ApplicationPermit.objects.get(application__id = application_id)
-                _log_action("İzin yazısı silindi: %s" % applicationpermit,
-                    request.user, request.META["REMOTE_ADDR"])
-                # this removes the file from fs but does not call object.save()
-                applicationpermit.file.delete()
                 applicationpermit.file = request.FILES["file"]
                 applicationpermit.save()
                 _log_action("İzin yazısı yüklendi: %s" % applicationpermit,
