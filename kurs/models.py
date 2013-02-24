@@ -2,11 +2,10 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 from registration.signals import user_registered
-from datetime import datetime
 from django.utils.timezone import now as tz_aware_now
+from django.db.models.signals import pre_delete
 
 class Event(models.Model):
     class Meta:
@@ -58,6 +57,15 @@ class Application(models.Model):
 
     def __unicode__(self):
         return "%s -> %s" % (self.person.username, self.course)
+
+def delete_application_choices(sender, **kwargs):
+    instance = kwargs['instance']
+    ApplicationChoices.objects.filter(person = instance.person,
+                                      event = instance.course.event).delete()
+
+# Delete all application choices for the event
+# whenever an application gets deleted
+pre_delete.connect(delete_application_choices, sender=Application, dispatch_uid="unique_identifier")
 
 class ApplicationPermit(models.Model):
     class Meta:

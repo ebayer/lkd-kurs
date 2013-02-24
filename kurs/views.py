@@ -174,12 +174,6 @@ class ApplicationDeleteView(DeleteView):
         # success_message = "jhjhjk"
         application = Application.objects.get(person = self.request.user, id = self.kwargs['pk'])
         if not application.approved:
-            applicationchoices = ApplicationChoices.objects.filter(person = self.request.user).filter(event = application.course.event)
-            for prev_choices in applicationchoices:
-                _log_action("Tercih silindi: %s" % prev_choices,
-                            request.user, request.META["REMOTE_ADDR"])
-            applicationchoices.delete()
-            messages.info(request, "Başvuru tercihleriniz silindi")
             try:
                 applicationpermit = ApplicationPermit.objects.get(application = application)
                 _log_action("İzin yazısı silindi: %s" % applicationpermit,
@@ -187,10 +181,11 @@ class ApplicationDeleteView(DeleteView):
                 # this removes the file from fs but does not call object.save()
                 applicationpermit.file.delete()
                 applicationpermit.delete()
-                messages.info(request, "Terich yazınız silindi")
+                messages.info(request, "İzin yazınız silindi")
             except ApplicationPermit.DoesNotExist:
                 pass
             messages.info(request, "Başvurunuz iptal edildi")
+            messages.info(request, "Başvuru tercihleriniz silindi")
             _log_action("Başvuru silindi: %s" % application,
                     request.user, request.META["REMOTE_ADDR"])
             return DeleteView.delete(self, request, *args, **kwargs)
