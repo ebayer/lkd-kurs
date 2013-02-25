@@ -15,10 +15,9 @@
 
 {% block content %}
 
-	{% blocktrans %}
-    <p>Are you sure that you want to change selected {{ objects_name }} objects?
-    The applicability status of the following objects will change:</p>
-    {% endblocktrans %}
+	<p>
+	{% blocktrans %}Are you sure that you want to change selected {{ objects_name }} objects? The applicability status of the following objects will change:{% endblocktrans %}
+	</p>
 
     {% for editable_object in editable_objects %}
         <ul>{{ editable_object|unordered_list }}</ul>

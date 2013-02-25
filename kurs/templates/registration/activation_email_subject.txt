@@ -1,1 +1,1 @@
-{% load i18n %}{% load l10n %}{% trans "Account activation on" %} {{ site.name }}
+{% load i18n %}{% load l10n %}{% blocktrans %}Account activation on {{ site.name }}{% endblocktrans %}

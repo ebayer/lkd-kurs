@@ -1,0 +1,644 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-25 18:47+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: admin.py:27
+#, python-format
+msgid "Successfully changed %(count)d %(items)s."
+msgstr "%(count)d %(items)s değiştirildi."
+
+#: admin.py:33
+msgid "Are you sure?"
+msgstr "Emin misiniz?"
+
+#: admin.py:58
+msgid "Change applicability status of the selected courses"
+msgstr "Seçili kursların başvurulabilirliğini değiştir"
+
+#: admin.py:80
+msgid "application permits"
+msgstr "izin yazıları"
+
+#: admin.py:81 admin.py:88
+msgid "application permit"
+msgstr "izin yazısı"
+
+#: admin.py:94
+msgid "Yes"
+msgstr "Evet"
+
+#: admin.py:95
+msgid "No"
+msgstr "Hayır"
+
+#: admin.py:122
+msgid "permit"
+msgstr "izin yazısı"
+
+#: admin.py:155 models.py:60 models.py:165 models.py:182 models.py:193
+msgid "user"
+msgstr "kullanıcı"
+
+#: admin.py:159 models.py:15 models.py:31 models.py:166
+msgid "event"
+msgstr "etkinlik"
+
+#: admin.py:163 models.py:28 models.py:61
+msgid "course"
+msgstr "kurs"
+
+#: admin.py:169
+msgid "user profiles"
+msgstr "kullanıcı profilleri"
+
+#: admin.py:170
+msgid "user profile"
+msgstr "kullanıcı profili"
+
+#: admin.py:176 models.py:180
+msgid "comments"
+msgstr "yorumlar"
+
+#: admin.py:177 models.py:179 models.py:183
+msgid "comment"
+msgstr "yorum"
+
+#: admin.py:191 models.py:194
+msgid "company"
+msgstr "kurum"
+
+#: forms.py:43 templates/kurs/profile_detail.html:14
+msgid "E-mail"
+msgstr "E-posta"
+
+#: forms.py:44 forms.py:72 templates/kurs/profile_detail.html:12
+msgid "First name"
+msgstr "Ad"
+
+#: forms.py:45 forms.py:73 templates/kurs/profile_detail.html:13
+msgid "Last name"
+msgstr "Soyad"
+
+#: forms.py:74 templates/kurs/profile_detail.html:15
+msgid "Company"
+msgstr "Kurum"
+
+#: forms.py:75 templates/kurs/profile_detail.html:16
+msgid "Contact address"
+msgstr "İletişim adresi"
+
+#: forms.py:76 templates/kurs/profile_detail.html:17
+msgid "Mobile"
+msgstr "Cep telefonu"
+
+#: forms.py:77 templates/kurs/profile_detail.html:18
+msgid "Phone"
+msgstr "Diğer telefon"
+
+#: models.py:16
+msgid "events"
+msgstr "etkinlikler"
+
+#: models.py:18 models.py:32
+msgid "display name"
+msgstr "görünen isim"
+
+#: models.py:19
+msgid "number of allowed user choices for this event"
+msgstr "bu etkinlik için kullanıcıların yapabileceği tercih adedi"
+
+#: models.py:21
+msgid "venue"
+msgstr "mekan"
+
+#: models.py:29
+msgid "courses"
+msgstr "kurslar"
+
+#: models.py:33
+msgid "description"
+msgstr "açıklama"
+
+#: models.py:34
+msgid "is applicable"
+msgstr "başvurulabilir"
+
+#: models.py:35
+msgid "deadline for user application"
+msgstr "son başvuru zamanı"
+
+#: models.py:36
+msgid "prerequisites"
+msgstr "gereksinimler"
+
+#: models.py:37
+msgid "start date"
+msgstr "başlangıç tarihi"
+
+#: models.py:38
+msgid "end date"
+msgstr "bitiş tarihi"
+
+#: models.py:56 models.py:133
+msgid "application"
+msgstr "başvuru"
+
+#: models.py:57
+msgid "applications"
+msgstr "başvurular"
+
+#: models.py:62
+msgid "date of application"
+msgstr "başvuru tarihi"
+
+#: models.py:63
+msgid "approved"
+msgstr "onay"
+
+#: models.py:65
+msgid "approver"
+msgstr "onaylayan"
+
+#: models.py:66
+msgid "date of approval"
+msgstr "onay tarihi"
+
+#: models.py:117
+#, python-format
+msgid "Files of type %(type)s are not supported."
+msgstr "%(type)s biçimi dosyalar desteklenmemektedir."
+
+#: models.py:121
+#, python-format
+msgid ""
+"Files of size greater than %(max_size)s are not allowed. Your file is "
+"%(current_size)s"
+msgstr ""
+"%(max_size)s 'dan daha büyük dosyalara izin verilmez. Dosyanızın boyutu "
+"%(current_size)s"
+
+#: models.py:130
+msgid "permit file"
+msgstr "İzin yazısı"
+
+#: models.py:131
+msgid "permit files"
+msgstr "izin yazıları"
+
+#: models.py:135
+msgid "file"
+msgstr "dosya"
+
+#: models.py:151
+msgid "upload date"
+msgstr "yükleme tarihi"
+
+#: models.py:160 models.py:170
+msgid "choice"
+msgstr "tercih"
+
+#: models.py:161
+msgid "choices"
+msgstr "tercihler"
+
+#: models.py:167
+msgid "last updated"
+msgstr "son güncelleme"
+
+#: models.py:169
+msgid "choice #"
+msgstr "tercih no"
+
+#: models.py:184 models.py:232
+msgid "date"
+msgstr "tarih"
+
+#: models.py:195
+msgid "contact address"
+msgstr "iletişim adresi"
+
+#: models.py:196
+msgid "mobile"
+msgstr "cep telefonu"
+
+#: models.py:196 models.py:197
+msgid "ie. 2165554433"
+msgstr "örn. 2165554433"
+
+#: models.py:197
+msgid "phone"
+msgstr "diğer telefon"
+
+#: models.py:229
+msgid "changelog"
+msgstr "değişiklik kaydı"
+
+#: models.py:230
+msgid "changelogs"
+msgstr "değişiklik kayıtları"
+
+#: models.py:233
+msgid "message"
+msgstr "mesaj"
+
+#: views.py:35
+msgid "No such event!"
+msgstr "Böyle bir etkinlik yok!"
+
+#: views.py:41
+msgid "Error occured while fetching course objects!"
+msgstr "Kurs nesnelerini alırken hata oluştu!"
+
+#: views.py:56
+msgid "No such course!"
+msgstr "Böyle bir kurs yok!"
+
+#: views.py:73
+msgid "Your application is saved"
+msgstr "Başvurunuz kaydedildi"
+
+#: views.py:77
+msgid "You can only apply to one course in this event!"
+msgstr "Bu etkinlikte sadece bir kursa başvurabilirsiniz!"
+
+#: views.py:142
+msgid "You did not apply to any course in this event!"
+msgstr "Bu etkinlikte hiçbir kursa başvurmadınız!"
+
+#: views.py:181
+msgid "Your choices are saved"
+msgstr "Tercihleriniz kaydedildi"
+
+#: views.py:215
+msgid "Your previously uploaded permit is deleted"
+msgstr "Önceden yüklediğiniz izin yazısı silindi"
+
+#: views.py:219
+msgid "Your application is deleted"
+msgstr "Başvurunuz silindi"
+
+#: views.py:220
+msgid "Your previous choices for this event are deleted"
+msgstr "Bu etkinlik için önceden yaptığınız tercihler silindi"
+
+#: views.py:226
+msgid "You are not allowed to cancel an application after it is approved"
+msgstr "Onaylanmış bir başvuruyu silemezsiniz"
+
+#: views.py:252
+msgid "Permit file is saved"
+msgstr "İzin yazısı kaydedildi"
+
+#: templates/base.html:54
+msgid "Go"
+msgstr "Git"
+
+#: templates/base.html:58
+msgid "Welcome"
+msgstr "Hoşgeldiniz"
+
+#: templates/base.html:60 templates/base.html.py:77
+msgid "Main page"
+msgstr "Ana Sayfa"
+
+#: templates/base.html:61 templates/base.html.py:78
+#: templates/kurs/event_list.html:8
+msgid "Events"
+msgstr "Etkinlikler"
+
+#: templates/base.html:62
+msgid "Profile"
+msgstr "Profil"
+
+#: templates/base.html:63 templates/kurs/application_list.html:8
+msgid "Previous applications"
+msgstr "Önceki başvurular"
+
+#: templates/base.html:64
+msgid "Logout"
+msgstr "Çıkış"
+
+#: templates/base.html:68
+msgid "Admin pages"
+msgstr "Yönetici sayfaları"
+
+#: templates/base.html:70
+msgid "Admin interface"
+msgstr "Yönetici arayüzü"
+
+#: templates/base.html:75
+msgid "You are not logged in."
+msgstr "Giriş yapmadınız."
+
+#: templates/base.html:84 templates/kurs/course_detail.html:33
+msgid "Login"
+msgstr "Giriş"
+
+#: templates/base.html:85 templates/kurs/course_detail.html:34
+#: templates/registration/login.html:15
+msgid "Register"
+msgstr "Kayıt ol"
+
+#: templates/admin/change_course_is_open.html:9
+msgid "Home"
+msgstr "Ana sayfa"
+
+#: templates/admin/change_course_is_open.html:12
+msgid "Edit multiple objects"
+msgstr "Birden fazla nesneyi değiştir"
+
+#: templates/admin/change_course_is_open.html:19
+#, python-format
+msgid ""
+"Are you sure that you want to change selected %(objects_name)s objects? The "
+"applicability status of the following objects will change:"
+msgstr ""
+"Seçili %(objects_name)s nesnelerini değiştirmek istediğinizden emin misiniz? "
+"Şu nesnelerin başvurulabilirliği değiştirilecek:"
+
+#: templates/admin/change_course_is_open.html:33
+msgid "Make open for application"
+msgstr "Başvuruya aç"
+
+#: templates/admin/change_course_is_open.html:34
+msgid "Make close for application"
+msgstr "Başvuruya kapat"
+
+#: templates/admin/change_course_is_open.html:39
+msgid "Yes, I'm sure"
+msgstr "Evet, eminim"
+
+#: templates/kurs/application_confirm_delete.html:8
+msgid "Cancel application"
+msgstr "Başvuruyu iptal et"
+
+#: templates/kurs/application_confirm_delete.html:19
+msgid "Delete"
+msgstr "Sil"
+
+#: templates/kurs/application_list.html:13
+msgid "Event"
+msgstr "Etkinlik"
+
+#: templates/kurs/application_list.html:14
+msgid "Course"
+msgstr "Kurs"
+
+#: templates/kurs/application_list.html:15
+msgid "Application date"
+msgstr "Başvuru tarihi"
+
+#: templates/kurs/application_list.html:16
+msgid "Permit"
+msgstr "İzin yazısı"
+
+#: templates/kurs/application_list.html:17
+msgid "Approval"
+msgstr "Onay"
+
+#: templates/kurs/application_list.html:18
+msgid "Approval date"
+msgstr "Onay tarihi"
+
+#: templates/kurs/application_list.html:30
+msgid "Show"
+msgstr "Göster"
+
+#: templates/kurs/application_list.html:31
+msgid "Upload new"
+msgstr "Yenisini yükle"
+
+#: templates/kurs/application_list.html:33
+#: templates/kurs/applicationpermit_form.html:14
+msgid "Upload"
+msgstr "Yükle"
+
+#: templates/kurs/application_list.html:40
+msgid "Cancel"
+msgstr "İptal"
+
+#: templates/kurs/application_list.html:41
+msgid "Choices"
+msgstr "Tercihler"
+
+#: templates/kurs/application_list.html:51
+msgid "You have not made an application before."
+msgstr "Hiç başvuru yapmadınız."
+
+#: templates/kurs/applicationchoices_edit.html:8
+#: templates/kurs/applicationchoices_list.html:8
+msgid "Application Choices"
+msgstr "Başvuru tercihleri"
+
+#: templates/kurs/applicationchoices_edit.html:16
+msgid "Save"
+msgstr "Kaydet"
+
+#: templates/kurs/applicationchoices_list.html:9
+msgid "Edit choices"
+msgstr "Tercihleri değiştir"
+
+#: templates/kurs/applicationchoices_list.html:15
+msgid "Choice"
+msgstr "Tercih"
+
+#: templates/kurs/applicationchoices_list.html:16
+msgid "Last updated"
+msgstr "Güncelleme tarihi"
+
+#: templates/kurs/applicationchoices_list.html:29
+msgid "You have not made any choices for this event yet."
+msgstr "Bu etkinlik için hiç tercih yapmadınız."
+
+#: templates/kurs/applicationpermit_form.html:8
+msgid "Upload permit file"
+msgstr "İzin yazısı yükle"
+
+#: templates/kurs/course_detail.html:9
+msgid "Description"
+msgstr "Açıklama"
+
+#: templates/kurs/course_detail.html:12
+msgid "Start date"
+msgstr "Başlangıç tarihi"
+
+#: templates/kurs/course_detail.html:15
+msgid "End date"
+msgstr "Bitiş tarihi"
+
+#: templates/kurs/course_detail.html:18
+msgid "Last date to apply/change"
+msgstr "Başvuru/değişiklik yapılabilecek son tarih"
+
+#: templates/kurs/course_detail.html:21
+msgid "Prerequisites"
+msgstr "Gereksinimler"
+
+#: templates/kurs/course_detail.html:26
+msgid "You have applied to this course."
+msgstr "Bu kursa başvurdunuz."
+
+#: templates/kurs/course_detail.html:28
+msgid "Apply"
+msgstr "Başvur"
+
+#: templates/kurs/course_detail.html:30
+msgid "You have already applied to another course in this event."
+msgstr "Bu etkinlikte zaten bir kursa başvurdunuz."
+
+#: templates/kurs/course_detail.html:32
+msgid "In order to apply for this course, either"
+msgstr "Bu kursa başvurmak için "
+
+#: templates/kurs/course_detail.html:34
+msgid "or"
+msgstr "veya"
+
+#: templates/kurs/course_detail.html:37
+msgid "This course is not open for application."
+msgstr "Bu kurs başvuruya kapalı"
+
+#: templates/kurs/course_detail.html:41
+msgid "There is no such course."
+msgstr "Böyle bir kurs yok."
+
+#: templates/kurs/event_list.html:17
+msgid "There are no events."
+msgstr "Etkinlik yok."
+
+#: templates/kurs/list_courses.html:8
+msgid "Courses"
+msgstr "Kurslar"
+
+#: templates/kurs/list_courses.html:17
+msgid "There are no courses in this event."
+msgstr "Bu etkinlikte kurs yok."
+
+#: templates/kurs/profile_detail.html:5
+msgid "Profile Details"
+msgstr "Profil detayları"
+
+#: templates/kurs/profile_detail.html:8
+#, python-format
+msgid "Profile details for %(user)s"
+msgstr "%(user)s için profil detayları"
+
+#: templates/kurs/profile_detail.html:9
+msgid "Edit"
+msgstr "Değiştir"
+
+#: templates/kurs/profile_detail.html:10
+msgid "Change Password"
+msgstr "Şifre değiştir"
+
+#: templates/profiles/edit_profile.html:5
+msgid "Edit Profile"
+msgstr "Profil Detaylarını Değiştir"
+
+#: templates/profiles/edit_profile.html:8
+#, python-format
+msgid "Edit profile details for %(user)s"
+msgstr "%(user)s için profil detaylarını değiştir"
+
+#: templates/profiles/edit_profile.html:11
+msgid "Update"
+msgstr "Güncelle"
+
+#: templates/registration/activate.html:9
+msgid "Account successfully activated"
+msgstr "Hesap etkinleştirildi"
+
+#: templates/registration/activate.html:11
+#: templates/registration/login.html:10
+#: templates/registration/password_reset_complete.html:9
+msgid "Log in"
+msgstr "Giriş"
+
+#: templates/registration/activate.html:15
+msgid "Account activation failed"
+msgstr "Hesap etkinleştirme başarısız oldu"
+
+#: templates/registration/activation_complete.html:6
+msgid "Your account is activated successfully. Please login now."
+msgstr "Hesabınız etkinleştirildi. Artık giriş yapabilirsiniz."
+
+#: templates/registration/activation_email.txt:3
+msgid "Activate account at"
+msgstr "Aşağıdaki bağlantıya tıklayarak hesabınızı etkinleştirin"
+
+#: templates/registration/activation_email.txt:7
+#, python-format
+msgid "Link is valid for %(expiration_days)s days."
+msgstr "Bağlantı %(expiration_days)s gün boyunca geçerlidir."
+
+#: templates/registration/activation_email_subject.txt:1
+#, fuzzy, python-format
+msgid "Account activation on %(site.name)s"
+msgstr "%(site.name)s için hesap etkinleştirme"
+
+#: templates/registration/login.html:14
+msgid "Forgot password"
+msgstr "Şifremi unuttum"
+
+#: templates/registration/login.html:14
+msgid "Reset it"
+msgstr "Sıfırla"
+
+#: templates/registration/login.html:15
+msgid "Not member"
+msgstr "Hesabım yok"
+
+#: templates/registration/logout.html:6
+msgid "Logged out"
+msgstr "Çıkış yapıldı"
+
+#: templates/registration/password_change_done.html:6
+msgid "Password changed"
+msgstr "Şifre değiştirildi"
+
+#: templates/registration/password_change_form.html:10
+#: templates/registration/password_reset_confirm.html:13
+#: templates/registration/password_reset_form.html:10
+#: templates/registration/registration_form.html:9
+msgid "Submit"
+msgstr "Gönder"
+
+#: templates/registration/password_reset_complete.html:7
+msgid "Password reset successfully"
+msgstr "Şifre sıfırlandı"
+
+#: templates/registration/password_reset_confirm.html:18
+msgid "Password reset failed"
+msgstr "Şifre sıfırlama başarısız oldu"
+
+#: templates/registration/password_reset_done.html:6
+msgid "Email with password reset instructions has been sent."
+msgstr "Şifre sıfırlama bilgilerini içeren eposta gönderildi."
+
+#: templates/registration/password_reset_email.html:3
+#, python-format
+msgid "Reset password at %(site_name)s"
+msgstr "%(site_name)s için şifre sıfırlama"
+
+#: templates/registration/registration_complete.html:6
+msgid "You are now registered. Activation email sent."
+msgstr "Kayıt işleminiz tamamlandı. Hesabınızı etkinleştirmek için gerekli eposta gönderildi."
+
+#~ msgid "Set"
+#~ msgstr "Ayarla"
