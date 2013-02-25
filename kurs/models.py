@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from registration.signals import user_registered
 from django.utils.timezone import now as tz_aware_now
 from django.db.models.signals import pre_delete
@@ -12,30 +12,30 @@ import magic
 
 class Event(models.Model):
     class Meta:
-        verbose_name = "Etkinlik"
-        verbose_name_plural = "Etkinlikler"
+        verbose_name = _('event')
+        verbose_name_plural = _('events')
     
-    display_name = models.CharField('Görünen İsim', max_length=200)
-    allowed_choice_num = models.IntegerField('Bu etkinlik için kullanıcıların yapabileceği tercih adedi',
+    display_name = models.CharField(verbose_name=_('display name'), max_length=200)
+    allowed_choice_num = models.IntegerField(verbose_name=_('number of allowed user choices for this event'),
                                              default=2)
-    venue = models.CharField('Etkinlik mekanı', max_length=200)
+    venue = models.CharField(verbose_name=_('venue'), max_length=200)
     
     def __unicode__(self):
         return self.display_name
 
 class Course(models.Model):
     class Meta:
-        verbose_name = "Kurs"
-        verbose_name_plural = "Kurslar"
+        verbose_name = _("course")
+        verbose_name_plural = _("courses")
     
-    event = models.ForeignKey(Event)
-    display_name = models.CharField('Görünen isim', max_length=200)
-    description = models.TextField('Açıklama')
-    is_open = models.BooleanField('Başvuru yapılabilir?')
-    change_allowed_date = models.DateTimeField('Kullanıcıların başvuru/değişiklik yapabilecekleri son tarih')
-    agreement = models.TextField('Kurs yükümlülükleri')
-    start_date = models.DateField('Kurs başlangıç tarihi')
-    end_date = models.DateField('Kurs bitiş tarihi')
+    event = models.ForeignKey(Event, verbose_name=_('event'))
+    display_name = models.CharField(verbose_name=_('display name'), max_length=200)
+    description = models.TextField(verbose_name=_('description'))
+    is_open = models.BooleanField(verbose_name=_('is applicable'))
+    change_allowed_date = models.DateTimeField(verbose_name=_('deadline for user application'))
+    agreement = models.TextField(verbose_name=_('prerequisites'))
+    start_date = models.DateField(verbose_name=_('start date'))
+    end_date = models.DateField(verbose_name=_('end date'))
 
     # We define this logic here in order to use it in user
     # course detail page, we filter messages and links according
@@ -53,17 +53,17 @@ class Course(models.Model):
 
 class Application(models.Model):
     class Meta:
-        verbose_name = "Başvuru"
-        verbose_name_plural = "Başvurular"
+        verbose_name = _("application")
+        verbose_name_plural = _("applications")
         unique_together = (("person", "course"),)
 
-    person = models.ForeignKey(User, related_name='application_users')
-    course = models.ForeignKey(Course)
-    application_date = models.DateTimeField()
-    approved = models.BooleanField(default=False)
+    person = models.ForeignKey(User, related_name='application_users', verbose_name=_('user'))
+    course = models.ForeignKey(Course, verbose_name=_('course'))
+    application_date = models.DateTimeField(verbose_name=_('date of application'))
+    approved = models.BooleanField(default=False, verbose_name=_('approved'))
     approved_by = models.ForeignKey(User, related_name='application_approver',
-                                    blank=True, null=True)
-    approve_date = models.DateTimeField(blank=True, null=True)
+                                    blank=True, null=True, verbose_name=_('approver'))
+    approve_date = models.DateTimeField(blank=True, null=True, verbose_name=_('date of approval'))
 
     def __unicode__(self):
         return "%s -> %s" % (self.person.username, self.course)
@@ -127,12 +127,13 @@ class ValidatedFileField(models.FileField):
 
 class ApplicationPermit(models.Model):
     class Meta:
-        verbose_name = "İzin Yazısı"
-        verbose_name_plural = "İzin Yazıları"
+        verbose_name = _("permit file")
+        verbose_name_plural = _("permit files")
 
-    application = models.OneToOneField(Application, unique=True)
+    application = models.OneToOneField(Application, unique=True, verbose_name=_('application'))
     # we use custom filefield with mime-time validation
-    file = ValidatedFileField(upload_to = "kurs/application_permits/%Y/%m/%d",
+    file = ValidatedFileField(verbose_name=_('file'),
+                              upload_to = "kurs/application_permits/%Y/%m/%d",
                               max_upload_size = 5242880,
                               content_types = ['application/msword',
                                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -147,7 +148,8 @@ class ApplicationPermit(models.Model):
                                                'application/vnd.oasis.opendocument.text',
                                                'application/x-vnd.oasis.opendocument.text',
                                                ])
-    upload_date = models.DateTimeField(auto_now = True, auto_now_add = True)
+    upload_date = models.DateTimeField(verbose_name=_('upload date'),
+                                       auto_now = True, auto_now_add = True)
 
 # Model for other course choices for the same event
 # Users not being able to accepted to their first application
@@ -155,16 +157,17 @@ class ApplicationPermit(models.Model):
 # course in the same event
 class ApplicationChoices(models.Model):
     class Meta:
-        verbose_name = "Tercih"
-        verbose_name_plural = "Tercihler"
+        verbose_name = _('choice')
+        verbose_name_plural = _('choices')
         unique_together = (("person", "event", "choice_number"),
                            ("person", "event", "choice"))
 
-    person = models.ForeignKey(User)
-    event = models.ForeignKey(Event)
-    last_update = models.DateTimeField(auto_now = True, auto_now_add = True)
-    choice_number = models.IntegerField()
-    choice = models.ForeignKey(Course)
+    person = models.ForeignKey(User, verbose_name=_('user'))
+    event = models.ForeignKey(Event, verbose_name=_('event'))
+    last_update = models.DateTimeField(verbose_name=_('last updated'),
+                                       auto_now = True, auto_now_add = True)
+    choice_number = models.IntegerField(verbose_name=_('choice #'))
+    choice = models.ForeignKey(Course, verbose_name=_('choice'))
 
     def __unicode__(self):
         return "%s -> %s -> %s - %s" %(self.person.username, self.event,
@@ -173,12 +176,13 @@ class ApplicationChoices(models.Model):
 # Comments for a user logged by admins
 class UserComment(models.Model):
     class Meta:
-        verbose_name = "Yorum"
-        verbose_name_plural = "Yorumlar"
+        verbose_name = _('comment')
+        verbose_name_plural = _('comments')
         
-    user = models.ForeignKey(User)
-    comment = models.TextField()
-    date = models.DateTimeField(auto_now = True, auto_now_add = True)
+    user = models.ForeignKey(User, verbose_name=_('user'))
+    comment = models.TextField(verbose_name=_('comment'))
+    date = models.DateTimeField(verbose_name=_('date'),
+                                auto_now = True, auto_now_add = True)
 
     def __unicode__(self):
         return "%s - %s - %s" %(self.user.username, self.comment, self.date)
@@ -187,10 +191,10 @@ class UserComment(models.Model):
 # django.contrib.auth uses
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, verbose_name=_('user'), related_name='my_profile')
-    company = models.CharField('Çalıştığı Kurum',max_length=30)
-    contact_address = models.TextField("İletişim Adresi")
-    mobile = models.CharField('Cep Telefonu (2165554433)',max_length=10)
-    phone = models.CharField('Ev Telefonu (2165554433)', max_length=10)
+    company = models.CharField(verbose_name=_('company'), max_length=30)
+    contact_address = models.TextField(verbose_name=_('contact address'))
+    mobile = models.CharField(verbose_name=_('mobile'), max_length=10, help_text=_('ie. 2165554433'))
+    phone = models.CharField(verbose_name=_('phone'), max_length=10, help_text=_('ie. 2165554433'))
 
 # user_registered signal provides user and request instances
 def create_profile(sender, user, request, **kwargs):
@@ -222,11 +226,11 @@ get_absolute_url = models.permalink(get_absolute_url)
 # Model for all user and admin action logs
 class ActionsLog(models.Model):
     class Meta:
-        verbose_name = "Değişiklik kaydı"
-        verbose_name_plural = "Değişiklik kayıtları"
+        verbose_name = _('changelog')
+        verbose_name_plural = _('changelogs')
 
-    date = models.DateTimeField(auto_now = True)
-    message = models.CharField(max_length = 200)
+    date = models.DateTimeField(verbose_name=_('date'), auto_now = True)
+    message = models.CharField(verbose_name=_('message'), max_length = 200)
 
     def __unicode__(self):
         return "%s - %s" %(self.date, self.message)

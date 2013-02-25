@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load i18n %}
+{% load l10n %}
 
 {% block content %}
 
-<h1>Başvuru Tercihleri</h1>
-<h3><a href="/kurs/etkinlik/{{ event_id }}/tercihler/edit/">Değişiklik yap</a></h3>
+<h1>{% trans "Application Choices" %}</h1>
+<h3><a href="/kurs/etkinlik/{{ event_id }}/tercihler/edit/">{% trans "Edit choices" %}</a></h3>
 {% if object_list %}
 
 <table>
 	<tr align="center">
 			<th>#</th>
-			<th>Tercih</th>
-			<th>Son güncelleme</th>
+			<th>{% trans "Choice" %}</th>
+			<th>{% trans "Last updated" %}</th>
 	</tr>
+
 	{% for applicationchoice in object_list %}
 		<tr align="center">
 			<td>{{ applicationchoice.choice_number }}</td>
@@ -21,8 +24,9 @@
 		</tr>
 	{% endfor %}
 </table>
+
 {% else %}
-	<p>Bu etkinlikte hiç tercih yapmadınız.</p>
+	<p>{% trans "You have not made any choices for this event yet." %}</p>
 {% endif %}
 		
 {% endblock %}

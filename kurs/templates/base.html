@@ -1,3 +1,5 @@
+{% load i18n %}
+{% load l10n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
@@ -8,7 +10,7 @@
 <meta name="keywords" content="keywords"/> 
 <meta name="author" content="author"/> 
 <link rel="stylesheet" type="text/css" href="/static/kurs/css/default.css" media="screen"/>
-<title>LKD Kurs Kayıt Yazılımı</title>
+<title>{% block title %}LKD Kurs Kayıt Yazılımı{% endblock %}</title>
 </head>
 
 <body>
@@ -42,34 +44,34 @@
 		<div class="sidenav">
 			
 		{% if user.is_authenticated %}
-			<h1>Hoşgeldiniz, {{ user.username }}</h1>
+			<h1>{% trans "Welcome" %} {{ user.username }}</h1>
 			<ul>
-				<li><a href="/kurs/">Ana Sayfa</a></li>
-				<li><a href="/kurs/etkinlik/">Etkinlikler</a></li>
-				<li><a href="/profile/">Profil</a></li>
-				<li><a href="/kurs/basvurular/">Önceki Başvurularım</a></li>
-				<li><a href="{% url auth_logout %}">Çıkış</a></li>
+				<li><a href="/kurs/">{% trans "Main page" %}</a></li>
+				<li><a href="/kurs/etkinlik/">{% trans "Events" %}</a></li>
+				<li><a href="/profile/">{% trans "Profile" %}</a></li>
+				<li><a href="/kurs/basvurular/">{% trans "Previous applications" %}</a></li>
+				<li><a href="{% url auth_logout %}">{% trans "Logout" %}</a></li>
 			</ul>
 
 			{% if user.is_staff %}
-			<h1>Admin Pages</h1>
+			<h1>{% trans "Admin pages" %}</h1>
 			<ul>
-				<li><a href="/admin/">Admin Interface</a></li>
+				<li><a href="/admin/">{% trans "Admin interface" %}</a></li>
 			</ul>
 			{% endif %}
 			
 		{% else %}
-			<h1>Giriş yapmadınız.</h1>
+			<h1>{% trans "You are not logged in." %}</h1>
 			<ul>
-				<li><a href="/kurs/">Ana Sayfa</a></li>
-				<li><a href="/kurs/etkinlik/">Etkinlikler</a></li>
+				<li><a href="/kurs/">{% trans "Main page" %}</a></li>
+				<li><a href="/kurs/etkinlik/">{% trans "Events" %}</a></li>
 				<li><a href="{% url auth_login %}?next=
 				{% if '/accounts/' in request.path  %}/kurs/
 				{% else %}
 				{% firstof request.path '/' %}
 				{% endif %}
-				">Giriş</a></li>
-				<li><a href="{% url registration_register %}">Kayıt Ol</a></li>
+				">{% trans "Login" %}</a></li>
+				<li><a href="{% url registration_register %}">{% trans "Register" %}</a></li>
 			</ul>
 		{% endif %}
 

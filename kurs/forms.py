@@ -4,6 +4,7 @@ from django import forms
 from kurs.models import ApplicationPermit, UserProfile, User
 from registration.forms import RegistrationFormUniqueEmail
 from django.contrib.localflavor.tr.forms import TRPhoneNumberField
+from django.utils.translation import ugettext_lazy as _
 
 # We would like to set the initial options to users previous application choices
 # while editing application choices
@@ -39,9 +40,9 @@ class ProfileForm(forms.ModelForm):
     # Use local flavor for phone fields
     mobile = TRPhoneNumberField()
     phone = TRPhoneNumberField()
-    email = forms.EmailField(label="Primary email", help_text='')
-    first_name = forms.CharField(label="First Name", help_text='')
-    last_name = forms.CharField(label="Last Name", help_text='')
+    email = forms.EmailField(label=_("E-mail"))
+    first_name = forms.CharField(label=_("First name"))
+    last_name = forms.CharField(label=_("Last name"))
 
     class Meta:
         model = UserProfile
@@ -68,9 +69,9 @@ class ProfileForm(forms.ModelForm):
 # time of registration. We also want the registration form to
 # enforce using a unique e-mail address
 class RegistrationFormUniqueEmailwithProfile(RegistrationFormUniqueEmail):
-    first_name = forms.CharField(label="First Name", help_text='')
-    last_name = forms.CharField(label="Last Name", help_text='')
-    company = forms.CharField(label='Çalıştığı Kurum', max_length=30)
-    contact_address = forms.CharField(label="İletişim Adresi", widget=forms.Textarea)
-    mobile = TRPhoneNumberField()
-    phone = TRPhoneNumberField()
+    first_name = forms.CharField(label=_("First name"))
+    last_name = forms.CharField(label=_("Last name"))
+    company = forms.CharField(label=_('Company'))
+    contact_address = forms.CharField(label=_("Contact address"), widget=forms.Textarea)
+    mobile = TRPhoneNumberField(label=_("Mobile"))
+    phone = TRPhoneNumberField(label=_("Phone"))

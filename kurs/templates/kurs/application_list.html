@@ -1,46 +1,54 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load i18n %}
+{% load l10n %}
 
 {% block content %}
 
-<h1>Başvurular</h1>
+<h1>{% trans "Previous applications" %}</h1>
 				
 {% if application_list %}
 <table>
 	<tr align="left">
-			<th>Etkinlik</th>
-			<th>Kurs</th>
-			<th>Başvuru tarihi</th>
-			<th colspan="2">İzin yazısı</th>
-			<th>Onay</th>
-			<th>Onay tarihi</th>
+			<th>{% trans "Event" %}</th>
+			<th>{% trans "Course" %}</th>
+			<th>{% trans "Application date" %}</th>
+			<th colspan="2">{% trans "Permit" %}</th>
+			<th>{% trans "Approval" %}</th>
+			<th>{% trans "Approval date" %}</th>
 			<th>&nbsp</th>
 			<th>&nbsp</th>
 	</tr>
+
 	{% for application in application_list %}
 		<tr align="center">
 			<td>{{ application.course.event }}</td>
 			<td>{{ application.course }}</td>
 			<td>{{ application.application_date|date:"d.m.Y H:i" }}</td>
+
 			{% if application.applicationpermit.file %}
-				<td><a href="{{ application.applicationpermit.file.url }}">Göster</a></td>
-				<td><a href="/kurs/basvurular/{{ application.id }}/izin/">Yenisini yükle</a></td>
+				<td><a href="{{ application.applicationpermit.file.url }}">{% trans "Show" %}</a></td>
+				<td><a href="/kurs/basvurular/{{ application.id }}/izin/">{% trans "Upload new" %}</a></td>
 			{% else %}
-				<td colspan="2"><a href="/kurs/basvurular/{{ application.id }}/izin/">Yükle</a></td>
+				<td colspan="2"><a href="/kurs/basvurular/{{ application.id }}/izin/">{% trans "Upload" %}</a></td>
 			{% endif %}
+
 			<td>{{ application.approved|default:"" }}</td>
 			<td>{{ application.approve_date|date:"d.m.Y H:i" }}</td>
-			{% if application.course.is_open and not application.approved %}
-				<td><a href="/kurs/basvurular/{{ application.id }}/iptal/">İptal</a></td>
-				<td><a href="/kurs/etkinlik/{{ application.course.event.id }}/tercihler/">Tercihler</a></td>
+
+			{% if application.course.can_be_applied and not application.approved %}
+				<td><a href="/kurs/basvurular/{{ application.id }}/iptal/">{% trans "Cancel" %}</a></td>
+				<td><a href="/kurs/etkinlik/{{ application.course.event.id }}/tercihler/">{% trans "Choices" %}</a></td>
 			{% else %}
 				<td colspan="2">&nbsp</td>
 			{% endif %}
+
 		</tr>
 	{% endfor %}
 </table>
+
 {% else %}
-	<p>Hiç başvuru yok.</p>
+	<p>{% trans "You have not made an application before." %}</p>
 {% endif %}
 		
 {% endblock %}

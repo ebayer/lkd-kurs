@@ -10,6 +10,7 @@ from django.contrib.admin import helpers
 from django.template.response import TemplateResponse
 from django.contrib.admin.util import model_ngettext
 from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 from django.contrib.admin import SimpleListFilter
 
 # Admin action to change the application status of the courses
@@ -54,7 +55,7 @@ def change_course_is_open(modeladmin, request, queryset):
     # Display the confirmation page
     return TemplateResponse(request, 'admin/change_course_is_open.html',
     context, current_app=modeladmin.admin_site.name)
-change_course_is_open.short_description = "Seçili kursların başvuru statüsünü değiştir"
+change_course_is_open.short_description = ugettext_lazy("Change applicability status of the selected courses")
 
 # Admin page for events
 class EventAdmin(admin.ModelAdmin):
@@ -76,22 +77,22 @@ class CourseAdmin(admin.ModelAdmin):
 class ApplicationPermitInline(admin.StackedInline):
     model = ApplicationPermit
     can_delete = True
-    verbose_name_plural = 'İzin Yazıları'
-    verbose_name = 'İzin Yazısı'
+    verbose_name_plural = ugettext_lazy('application permits')
+    verbose_name = ugettext_lazy('application permit')
     extra=0
 
 # We want to filter according to the availability of an applicationpermit.
 # Since applicationpermit is another model, we need to define a custom way
 # to filter queryset according to the one-to-one field
 class HasApplicationPermitFilter(SimpleListFilter):
-    title = _('izin yazısı')
+    title = ugettext_lazy('application permit')
     parameter_name = 'permit'
 
     # Available choices for the filter
     def lookups(self, request, model_admin):
         return [
-            ('1', 'Var'),
-            ('0', 'Yok'),
+            ('1', ugettext_lazy('Yes')),
+            ('0', ugettext_lazy('No')),
         ]
 
     # Filter queryset for application accoring to applicationpermit availability
@@ -118,7 +119,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     def has_applicationpermit(self, obj):
         return True if obj.applicationpermit else False
     has_applicationpermit.boolean = True
-    has_applicationpermit.short_description = 'İzin Yazısı'
+    has_applicationpermit.short_description = ugettext_lazy('permit')
 
 # Admin page for other application choices in this event
 class ApplicationChoicesAdmin(admin.ModelAdmin):
@@ -151,29 +152,29 @@ class ApplicationPermitAdmin(admin.ModelAdmin):
     # admin list view
     def get_application_person(self, obj):
         return ("%s" % (obj.application.person.username))
-    get_application_person.short_description = 'User'
+    get_application_person.short_description = ugettext_lazy('user')
 
     def get_application_event(self, obj):
         return ("%s" % (obj.application.course.event.display_name))
-    get_application_event.short_description = 'Event'
+    get_application_event.short_description = ugettext_lazy('event')
 
     def get_application_course(self, obj):
         return ("%s" % (obj.application.course.display_name))
-    get_application_course.short_description = 'Course'
+    get_application_course.short_description = ugettext_lazy('course')
 
 # We like to edit user profile data inline from user detail page
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
-    verbose_name_plural = 'Kullanıcı Bilgileri'
-    verbose_name = 'Kullanıcı Bilgisi'
+    verbose_name_plural = ugettext_lazy('user profiles')
+    verbose_name = ugettext_lazy('user profile')
 
 # We like to edit user comment data inline from user detail page
 class UserCommentInline(admin.StackedInline):
     model = UserComment
     can_delete = True
-    verbose_name_plural = 'Yorumlar'
-    verbose_name = 'Yorum'
+    verbose_name_plural = ugettext_lazy('comments')
+    verbose_name = ugettext_lazy('comment')
     extra=0
 
 # Define a new admin page for editing user details in order to use the inlines
@@ -187,7 +188,7 @@ class UserAdmin(UserAdmin):
     # we need to get that information from the related UserProfile model
     def get_userprofile_company(self, obj):
         return ("%s" % (obj.my_profile.company))
-    get_userprofile_company.short_description = 'Kurum'
+    get_userprofile_company.short_description = ugettext_lazy('company')
 
 # Re-register UserAdmin
 admin.site.unregister(User)

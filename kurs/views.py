@@ -14,6 +14,7 @@ from django.views.generic.edit import DeleteView
 from django.forms.formsets import formset_factory
 from django.utils.functional import curry
 from django.contrib import messages
+from django.utils.translation import ugettext as _
 
 # FIXME: Better convert this as a signal receiver
 def _log_action(message, username, REMOTE_ADDR):
@@ -31,13 +32,13 @@ def list_courses(request, event_id):
     try:
         event = Event.objects.get(pk=event_id)
     except Event.DoesNotExist:
-        messages.error(request, "Böyle bir etkinlik yok")
+        messages.error(request, _('No such event!'))
         return render_to_response('kurs/hata.html',
             context_instance=RequestContext(request))
     try:
         course_list = Course.objects.filter(event=event_id)
     except Course.DoesNotExist:
-        messages.error(request, "Kurs nesnelerini alırken hata oluştu")
+        messages.error(request, _('Error occured while fetching course objects!'))
         return render_to_response('kurs/hata.html',
             context_instance=RequestContext(request))
     
@@ -52,7 +53,7 @@ def apply_for_course(request, course_id):
     try:
         course = Course.objects.get(pk=course_id)
     except Course.DoesNotExist:
-        messages.error(request, "Böyle bir kurs yok")
+        messages.error(request, _('No such course!'))
         return render_to_response('kurs/hata.html',
             context_instance=RequestContext(request))
 
@@ -69,11 +70,11 @@ def apply_for_course(request, course_id):
         application.save()
         _log_action("Başvuru yapıldı: %s" % application,
                     request.user, request.META["REMOTE_ADDR"])
-        messages.info(request, "Başvurunuz kaydedildi")
+        messages.info(request, _('Your application is saved'))
         # Redirect after successful application
         return HttpResponseRedirect('/kurs/etkinlik/' + str(course.event.id) + '/tercihler/')
     else:
-        messages.error(request, "Bu etkinlikte sadece bir kursa kaydolabilirsiniz.")
+        messages.error(request, _('You can only apply to one course in this event!'))
         return render_to_response('kurs/hata.html',
                               context_instance=RequestContext(request))
 
@@ -138,7 +139,7 @@ def edit_choices(request, event_id):
     try:
         applied_course = Application.objects.get(person = request.user, course__event = event_id)
     except Application.DoesNotExist:
-        messages.error(request, "Bu etkinlikte hiçbir kursa başvurmadınız")
+        messages.error(request, _('You did not apply to any course in this event!'))
         return render_to_response('kurs/hata.html',
                     context_instance=RequestContext(request))
 
@@ -177,7 +178,7 @@ def edit_choices(request, event_id):
                     request.user, request.META["REMOTE_ADDR"])
                 choice_number += 1
 
-            messages.info(request, "Tercihleriniz kaydedildi")
+            messages.info(request, _('Your choices are saved'))
             # redirect to his applicationchoice list for this event
             return HttpResponseRedirect("/kurs/etkinlik/" + event_id + "/tercihler/")
 
@@ -211,18 +212,18 @@ class ApplicationDeleteView(DeleteView):
                 _log_action("İzin yazısı silindi: %s" % applicationpermit,
                     request.user, request.META["REMOTE_ADDR"])
                 applicationpermit.delete()
-                messages.info(request, "İzin yazınız silindi")
+                messages.info(request, _('Your previously uploaded permit is deleted'))
             except ApplicationPermit.DoesNotExist:
                 pass
 
-            messages.info(request, "Başvurunuz iptal edildi")
-            messages.info(request, "Başvuru tercihleriniz silindi")
+            messages.info(request, _('Your application is deleted'))
+            messages.info(request, _('Your previous choices for this event are deleted'))
             _log_action("Başvuru silindi: %s" % application,
                     request.user, request.META["REMOTE_ADDR"])
             return DeleteView.delete(self, request, *args, **kwargs)
 
         else:
-            messages.error(request, "Onaylanmış bir başvuruyu iptal edemezsiniz")
+            messages.error(request, _('You are not allowed to cancel an application after it is approved'))
             return render_to_response('kurs/hata.html',
                         context_instance=RequestContext(request))
 
@@ -248,7 +249,7 @@ def upload_permit(request, application_id):
                 _log_action("İzin yazısı yüklendi: %s" % applicationpermit,
                             request.user, request.META["REMOTE_ADDR"])
 
-            messages.info(request, "İzin yazınız kaydedildi")
+            messages.info(request, _('Permit file is saved'))
             return HttpResponseRedirect('/kurs/basvurular/')
 
     else:

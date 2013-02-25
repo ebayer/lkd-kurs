@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load i18n %}
+{% load l10n %}
 
 {% block content %}
 
-<h1>İzin yazısı yükleme</h1>
+<h1>{% trans "Upload permit file" %}</h1>
 <form method="post" action="" enctype="multipart/form-data">{% csrf_token %}
     {{ form.management_form }}
     <table>
         {{ form }}
     </table>
-    <input type="submit" value="Kaydet" />
+    <input type="submit" value="{% trans "Upload" %}" />
 </form>
 		
 {% endblock %}

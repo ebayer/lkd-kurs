@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load i18n %}
+{% load l10n %}
 
 {% block content %}
 
-<h1>Etkinlikler</h1>
+<h1>{% trans "Events" %}</h1>
 				
 {% if event_list %}
 <ul>
@@ -12,7 +14,7 @@
 	{% endfor %}
 </ul>
 {% else %}
-	<p>Hiç etkinlik yok.</p>
+	<p>{% trans "There are no events." %}</p>
 {% endif %}
 		
 {% endblock %}

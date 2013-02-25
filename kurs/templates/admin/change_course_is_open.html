@@ -1,5 +1,6 @@
 {% extends "admin/base_site.html" %}
-{% load i18n l10n %}
+{% load i18n %}
+{% load l10n %}
 {% load url from future %}
 {% load admin_urls %}
 
@@ -13,19 +14,27 @@
 {% endblock %}
 
 {% block content %}
-    <p>Seçili {{ objects_name }} nesnelerini değiştirmek istediğinizden emin misiniz? Aşağıdaki nesnelerin başvuru yapılabilme statüsü değişecek</p>
+
+	{% blocktrans %}
+    <p>Are you sure that you want to change selected {{ objects_name }} objects?
+    The applicability status of the following objects will change:</p>
+    {% endblocktrans %}
+
     {% for editable_object in editable_objects %}
         <ul>{{ editable_object|unordered_list }}</ul>
     {% endfor %}
+
     <form action="" method="post">{% csrf_token %}
     <div>
     {% for obj in queryset %}
     <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk|unlocalize }}" />
     {% endfor %}
+
     <select name="status">
-		<option value="True">Başvuruya aç</option>
-		<option value="False">Başvuruya kapat</option>
+		<option value="True">{% trans "Make open for application" %}</option>
+		<option value="False">{% trans "Make close for application" %}</option>
     </select>
+
     <input type="hidden" name="action" value="change_course_is_open" />
     <input type="hidden" name="post" value="yes" />
     <input type="submit" value="{% trans "Yes, I'm sure" %}" />

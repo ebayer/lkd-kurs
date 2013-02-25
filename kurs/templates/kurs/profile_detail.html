@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load l10n %}
 
-{% block title %}Profile Details{% endblock %}
+{% block title %}{% trans "Profile Details" %}{% endblock %}
 
 {% block content %}
-<h1>Profile for {{ user }}
+<h1>{% blocktrans %}Profile details for {{ user }}{% endblocktrans %}
 (<a href="{% url profiles.views.edit_profile %}">{% trans "Edit" %}</a>
 <a href="{% url auth_password_change %}">{% trans "Change Password" %}</a>)</h1>
 
-<p>İsim: {{ profile.user.first_name }}</p>
-<p>Soyisim: {{ profile.user.last_name }}</p>
-<p>E-posta: {{ profile.user.email }}</p>
-<p>Çalıştığı Kurum: {{ profile.company }}</p>
-<p>Adres: {{ profile.contact_address|linebreaksbr|escape }}</p>
-<p>Cep telefonu: {{ profile.mobile }}</p>
-<p>Ev telefonu: {{ profile.phone }}</p>
+<p>{% trans "First name" %}: {{ profile.user.first_name }}</p>
+<p>{% trans "Last name" %}: {{ profile.user.last_name }}</p>
+<p>{% trans "E-mail" %}: {{ profile.user.email }}</p>
+<p>{% trans "Company" %}: {{ profile.company }}</p>
+<p>{% trans "Contact address" %}:<br />{{ profile.contact_address|linebreaksbr|escape }}</p>
+<p>{% trans "Mobile" %}: {{ profile.mobile }}</p>
+<p>{% trans "Phone" %}: {{ profile.phone }}</p>
 
 
 {% endblock content %}
