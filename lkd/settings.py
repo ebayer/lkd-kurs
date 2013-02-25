@@ -1,3 +1,4 @@
+# coding=utf-8
 # Django settings for lkd project.
 
 DEBUG = True
@@ -29,6 +30,14 @@ TIME_ZONE = 'Europe/Istanbul'
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'tr-TR'
+
+ugettext = lambda s: s
+
+_ = lambda s: s
+LANGUAGES = (
+  ('tr', _('Turkish')),
+  ('en', _('English')),
+)
 
 SITE_ID = 1
 
@@ -89,8 +98,9 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

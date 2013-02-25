@@ -16,7 +16,8 @@ class Event(models.Model):
         verbose_name_plural = "Etkinlikler"
     
     display_name = models.CharField('Görünen İsim', max_length=200)
-    allowed_choice_num = models.IntegerField('Bu etkinlik için kullanıcıların yapabileceği tercih adedi', default=2)
+    allowed_choice_num = models.IntegerField('Bu etkinlik için kullanıcıların yapabileceği tercih adedi',
+                                             default=2)
     venue = models.CharField('Etkinlik mekanı', max_length=200)
     
     def __unicode__(self):
@@ -35,9 +36,14 @@ class Course(models.Model):
     agreement = models.TextField('Kurs yükümlülükleri')
     start_date = models.DateField('Kurs başlangıç tarihi')
     end_date = models.DateField('Kurs bitiş tarihi')
-    
+
+    # We define this logic here in order to use it in user
+    # course detail page, we filter messages and links according
+    # to this property
     @property
     def can_be_applied(self):
+        # We have to use timezone-aware date-time objects because we
+        # set USE_TZ=True in settings.py
         if self.is_open and self.change_allowed_date >= tz_aware_now():
             return True
         return False
@@ -55,7 +61,8 @@ class Application(models.Model):
     course = models.ForeignKey(Course)
     application_date = models.DateTimeField()
     approved = models.BooleanField(default=False)
-    approved_by = models.ForeignKey(User, related_name='application_approver', blank=True, null=True)
+    approved_by = models.ForeignKey(User, related_name='application_approver',
+                                    blank=True, null=True)
     approve_date = models.DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
@@ -68,7 +75,8 @@ def delete_application_choices(sender, **kwargs):
 
 # Delete all application choices for the event
 # whenever an application gets deleted
-pre_delete.connect(delete_application_choices, sender=Application, dispatch_uid="unique_identifier")
+pre_delete.connect(delete_application_choices, sender=Application,
+                   dispatch_uid="unique_identifier")
 
 # Validate the permit file accoring to mime-type
 # got from
@@ -123,6 +131,7 @@ class ApplicationPermit(models.Model):
         verbose_name_plural = "İzin Yazıları"
 
     application = models.OneToOneField(Application, unique=True)
+    # we use custom filefield with mime-time validation
     file = ValidatedFileField(upload_to = "kurs/application_permits/%Y/%m/%d",
                               max_upload_size = 5242880,
                               content_types = ['application/msword',
@@ -140,6 +149,10 @@ class ApplicationPermit(models.Model):
                                                ])
     upload_date = models.DateTimeField(auto_now = True, auto_now_add = True)
 
+# Model for other course choices for the same event
+# Users not being able to accepted to their first application
+# are given a couple of choices to automaticly apply to another
+# course in the same event
 class ApplicationChoices(models.Model):
     class Meta:
         verbose_name = "Tercih"
@@ -154,8 +167,10 @@ class ApplicationChoices(models.Model):
     choice = models.ForeignKey(Course)
 
     def __unicode__(self):
-        return "%s -> %s -> %s - %s" %(self.person.username, self.event, self.choice_number, self.choice)
+        return "%s -> %s -> %s - %s" %(self.person.username, self.event,
+                                       self.choice_number, self.choice)
 
+# Comments for a user logged by admins
 class UserComment(models.Model):
     class Meta:
         verbose_name = "Yorum"
@@ -168,6 +183,8 @@ class UserComment(models.Model):
     def __unicode__(self):
         return "%s - %s - %s" %(self.user.username, self.comment, self.date)
 
+# Custom user profile in order to extend the standart User object that
+# django.contrib.auth uses
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, verbose_name=_('user'), related_name='my_profile')
     company = models.CharField('Çalıştığı Kurum',max_length=30)
@@ -175,6 +192,7 @@ class UserProfile(models.Model):
     mobile = models.CharField('Cep Telefonu (2165554433)',max_length=10)
     phone = models.CharField('Ev Telefonu (2165554433)', max_length=10)
 
+# user_registered signal provides user and request instances
 def create_profile(sender, user, request, **kwargs):
     user.first_name=request.POST['first_name']
     user.last_name=request.POST['last_name']
@@ -185,14 +203,23 @@ def create_profile(sender, user, request, **kwargs):
     profile.mobile = request.POST['mobile']
     profile.phone = request.POST['phone']
     profile.save()
-    
+
+# When a new user is registered, create his profile too
+# Profile of a user can not be empty since we gather this information
+# and write to DB at registration time with RegistrationFormUniqueEmailwithProfile
 user_registered.connect(create_profile)
 
+# Edit profile page used by the django-profiles module requires
+# request.username to be present. This view gets the username
+# from the url. However we do not want users to see each others profiles
+# so here we limit the username to only the username of the current user
+# and change the urlconf to not pass username as a parameter
 def get_absolute_url(self):
         return ('profiles_profile_detail', (), { 'username': self.user.username })
 
 get_absolute_url = models.permalink(get_absolute_url)
 
+# Model for all user and admin action logs
 class ActionsLog(models.Model):
     class Meta:
         verbose_name = "Değişiklik kaydı"

@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from django.views.generic import ListView
-from kurs.models import *
+from kurs.models import Event
 from kurs.views import CourseDetailView, ApplicationDeleteView, ApplicationChoicesList, ApplicationList
 from django.contrib.auth.decorators import login_required
 
