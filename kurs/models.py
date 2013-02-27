@@ -3,9 +3,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from django.dispatch import receiver
 from registration.signals import user_registered
-from django.utils.timezone import now as tz_aware_now
 from django.db.models.signals import pre_delete
+from django.utils.timezone import now as tz_aware_now
 from django import forms
 from django.template.defaultfilters import filesizeformat
 import magic
@@ -68,15 +69,13 @@ class Application(models.Model):
     def __unicode__(self):
         return "%s -> %s" % (self.person.username, self.course)
 
+# Delete all application choices for the event
+# whenever an application gets deleted
+@receiver(pre_delete, sender=Application, dispatch_uid="unique_identifier")
 def delete_application_choices(sender, **kwargs):
     instance = kwargs['instance']
     ApplicationChoices.objects.filter(person = instance.person,
                                       event = instance.course.event).delete()
-
-# Delete all application choices for the event
-# whenever an application gets deleted
-pre_delete.connect(delete_application_choices, sender=Application,
-                   dispatch_uid="unique_identifier")
 
 # Validate the permit file accoring to mime-type
 # got from
@@ -196,6 +195,10 @@ class UserProfile(models.Model):
     mobile = models.CharField(verbose_name=_('mobile'), max_length=10, help_text=_('ie. 2165554433'))
     phone = models.CharField(verbose_name=_('phone'), max_length=10, help_text=_('ie. 2165554433'))
 
+# When a new user is registered, create his profile too
+# Profile of a user can not be empty since we gather this information
+# and write to DB at registration time with RegistrationFormUniqueEmailwithProfile
+@receiver(user_registered)
 # user_registered signal provides user and request instances
 def create_profile(sender, user, request, **kwargs):
     user.first_name=request.POST['first_name']
@@ -207,11 +210,6 @@ def create_profile(sender, user, request, **kwargs):
     profile.mobile = request.POST['mobile']
     profile.phone = request.POST['phone']
     profile.save()
-
-# When a new user is registered, create his profile too
-# Profile of a user can not be empty since we gather this information
-# and write to DB at registration time with RegistrationFormUniqueEmailwithProfile
-user_registered.connect(create_profile)
 
 # Edit profile page used by the django-profiles module requires
 # request.username to be present. This view gets the username
