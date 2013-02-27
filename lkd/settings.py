@@ -136,31 +136,61 @@ INSTALLED_APPS = (
     'kurs',
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
+#DEBUG    Detailed information, typically of interest only when diagnosing problems.
+#INFO    Confirmation that things are working as expected.
+#WARNING    An indication that something unexpected happened, or indicative of some problem in the near future (e.g. ‘disk space low’). The software is still working as expected.
+#ERROR    Due to a more serious problem, the software has not been able to perform some function.
+#CRITICAL    A serious error, indicating that the program itself may be unable to continue running.
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
     },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
+        'null': {
+            'level':'DEBUG',
+            'class':'django.utils.log.NullHandler',
+        },
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+        'django_filehandler': {
+                'level':'DEBUG',
+                'class':'logging.handlers.RotatingFileHandler',
+                'filename': MEDIA_ROOT + 'kurs/logs/django.log',
+                'maxBytes': 1024*1024*5, # 5 MB
+                'backupCount': 5,
+                'formatter':'standard',
+        },
+        'kurs_filehandler': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': MEDIA_ROOT + 'kurs/logs/kurs.log',
+            'maxBytes': 1024*1024*5, # 5 MB,
+            'backupCount': 5,
+            'formatter': 'standard',
+        },
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+        'django': {
+            'handlers':['django_filehandler',],
+            'level':'INFO',
             'propagate': True,
+        },
+        'django.db.backends': {
+            'handlers': ['django_filehandler',],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'kurs': {
+            'handlers': ['kurs_filehandler'],
+            'level': 'DEBUG',
         },
     }
 }

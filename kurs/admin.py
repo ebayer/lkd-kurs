@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from kurs.models import Event, Course, UserComment, Application, ApplicationChoices
-from kurs.models import ApplicationPermit, UserProfile, ActionsLog
+from kurs.models import ApplicationPermit, UserProfile
 from django.utils.encoding import force_unicode
 from django.contrib.admin import helpers
 from django.template.response import TemplateResponse
@@ -129,14 +129,6 @@ class ApplicationChoicesAdmin(admin.ModelAdmin):
     date_hierarchy = 'last_update'
     ordering = ['person__id', '-event__id', 'choice']
 
-# Admin page for user and admin action logs
-class ActionsLogAdmin(admin.ModelAdmin):
-    list_display = ('date', 'message')
-    search_fields = ['message']
-    list_filter = ['date']
-    date_hierarchy = 'date'
-    ordering = ['-date']
-
 # Admin page for applicationpermits
 class ApplicationPermitAdmin(admin.ModelAdmin):
     list_display = ('get_application_person', 'get_application_event',
@@ -200,4 +192,3 @@ admin.site.register(Course, CourseAdmin)
 admin.site.register(Application, ApplicationAdmin)
 admin.site.register(ApplicationChoices, ApplicationChoicesAdmin)
 admin.site.register(ApplicationPermit, ApplicationPermitAdmin)
-admin.site.register(ActionsLog, ActionsLogAdmin)

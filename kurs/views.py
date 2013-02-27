@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
-from kurs.models import ActionsLog, Event, Course, Application, ApplicationChoices
+from kurs.models import Event, Course, Application, ApplicationChoices
 from kurs.models import ApplicationPermit
 from kurs.forms import ApplicationChoiceForm, ApplicationPermitForm
 from django.utils import timezone
@@ -15,12 +15,9 @@ from django.forms.formsets import formset_factory
 from django.utils.functional import curry
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+import logging
 
-# FIXME: Better convert this as a signal receiver
-def _log_action(message, username, REMOTE_ADDR):
-    log = ActionsLog(message = "%s. request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
-                     (message, username, REMOTE_ADDR))
-    log.save()
+logger = logging.getLogger(__name__)
 
 def index(request):
     return render_to_response('kurs/index.html',
@@ -68,8 +65,11 @@ def apply_for_course(request, course_id):
         application = Application(person = request.user, course = course,
                                   application_date = timezone.now())
         application.save()
-        _log_action("Başvuru yapıldı: %s" % application,
-                    request.user, request.META["REMOTE_ADDR"])
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("Başvuru yapıldı: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                     (application, request.user, request.META["REMOTE_ADDR"]))
+
         messages.info(request, _('Your application is saved'))
         # Redirect after successful application
         return HttpResponseRedirect('/kurs/etkinlik/' + str(course.event.id) + '/tercihler/')
@@ -162,8 +162,11 @@ def edit_choices(request, event_id):
             # Delete all choices made previously in order to overwrite
             if not previous_choices.count() == 0:
                 for prev_choices in previous_choices:
-                    _log_action("Tercih silindi: %s" % prev_choices,
-                                request.user, request.META["REMOTE_ADDR"])
+
+                    if logger.isEnabledFor(logging.DEBUG):
+                        logger.debug("Tercih silindi: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                                     (prev_choices, request.user, request.META["REMOTE_ADDR"]))
+
                 previous_choices.delete()
 
             # save all applicationchoices of user to the DB
@@ -174,8 +177,11 @@ def edit_choices(request, event_id):
                                             choice_number = choice_number,
                                             choice = Course.objects.get(id = choices["choice"]))
                 record.save()
-                _log_action("Tercih yapıldı: %s" % record,
-                    request.user, request.META["REMOTE_ADDR"])
+
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug("Tercih yapıldı: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                                 (record, request.user, request.META["REMOTE_ADDR"]))
+
                 choice_number += 1
 
             messages.info(request, _('Your choices are saved'))
@@ -209,8 +215,11 @@ class ApplicationDeleteView(DeleteView):
             # Delete application permit file associated with this application
             try:
                 applicationpermit = ApplicationPermit.objects.get(application = application)
-                _log_action("İzin yazısı silindi: %s" % applicationpermit,
-                    request.user, request.META["REMOTE_ADDR"])
+
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug("İzin yazısı silindi: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                                 (applicationpermit, request.user, request.META["REMOTE_ADDR"]))
+
                 applicationpermit.delete()
                 messages.info(request, _('Your previously uploaded permit is deleted'))
             except ApplicationPermit.DoesNotExist:
@@ -218,8 +227,11 @@ class ApplicationDeleteView(DeleteView):
 
             messages.info(request, _('Your application is deleted'))
             messages.info(request, _('Your previous choices for this event are deleted'))
-            _log_action("Başvuru silindi: %s" % application,
-                    request.user, request.META["REMOTE_ADDR"])
+
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("Başvuru silindi: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                             (application, request.user, request.META["REMOTE_ADDR"]))
+
             return DeleteView.delete(self, request, *args, **kwargs)
 
         else:
@@ -240,14 +252,19 @@ def upload_permit(request, application_id):
                 applicationpermit = ApplicationPermit.objects.get(application__id = application_id)
                 applicationpermit.file = request.FILES["file"]
                 applicationpermit.save()
-                _log_action("İzin yazısı yüklendi: %s" % applicationpermit,
-                            request.user, request.META["REMOTE_ADDR"])
+
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug("İzin yazısı yüklendi: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                                 (applicationpermit, request.user, request.META["REMOTE_ADDR"]))
+
             except ApplicationPermit.DoesNotExist:
                 applicationpermit = ApplicationPermit(application = application,
                                                       file = request.FILES['file'])
                 applicationpermit.save()
-                _log_action("İzin yazısı yüklendi: %s" % applicationpermit,
-                            request.user, request.META["REMOTE_ADDR"])
+
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug("İzin yazısı yüklendi: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                                 (applicationpermit, request.user, request.META["REMOTE_ADDR"]))
 
             messages.info(request, _('Permit file is saved'))
             return HttpResponseRedirect('/kurs/basvurular/')

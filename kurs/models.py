@@ -150,6 +150,9 @@ class ApplicationPermit(models.Model):
     upload_date = models.DateTimeField(verbose_name=_('upload date'),
                                        auto_now = True, auto_now_add = True)
 
+    def __unicode__(self):
+        return "%s -> %s" %(self.application, self.file.name,)
+
 # Model for other course choices for the same event
 # Users not being able to accepted to their first application
 # are given a couple of choices to automaticly apply to another
@@ -220,15 +223,3 @@ def get_absolute_url(self):
         return ('profiles_profile_detail', (), { 'username': self.user.username })
 
 get_absolute_url = models.permalink(get_absolute_url)
-
-# Model for all user and admin action logs
-class ActionsLog(models.Model):
-    class Meta:
-        verbose_name = _('changelog')
-        verbose_name_plural = _('changelogs')
-
-    date = models.DateTimeField(verbose_name=_('date'), auto_now = True)
-    message = models.CharField(verbose_name=_('message'), max_length = 200)
-
-    def __unicode__(self):
-        return "%s - %s" %(self.date, self.message)
