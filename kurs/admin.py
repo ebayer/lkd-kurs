@@ -12,6 +12,10 @@ from django.contrib.admin.util import model_ngettext
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.contrib.admin import SimpleListFilter
+import logging
+from django.contrib.contenttypes.models import ContentType
+
+logger = logging.getLogger(__name__)
 
 # Admin action to change the application status of the courses
 # used in list courses view (admin/kurs/course)
@@ -57,13 +61,44 @@ def change_course_is_open(modeladmin, request, queryset):
     context, current_app=modeladmin.admin_site.name)
 change_course_is_open.short_description = ugettext_lazy("Change applicability status of the selected courses")
 
+# Django's own ModelAdmin class defined in django/contrib/admin/options.py
+# logs all admin actions using a model defined in log_action function in
+# django/contrib/admin/models.py. By default this function records all object
+# changes made via the admin interface to django_admin_log table in DB
+# We want to modify this behaviour so all add/change/delete operations
+# via the admin interface gets logged into a seperate log file
+class LoggingModelAdmin(admin.ModelAdmin):
+    def log_addition(self, request, object):
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("%s added via admin interface: user = %s , object_id = %s , object = %s" %
+                         (ContentType.objects.get_for_model(object),
+                          request.user, object.pk, force_unicode(object)))
+        # FIXME: Remove this to disable logging into DB
+        admin.ModelAdmin.log_addition(self, request, object)
+
+    def log_change(self, request, object, message):
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("%s changed via admin interface: user = %s , object_id = %s , object = %s , change_message = %s" %
+                         (ContentType.objects.get_for_model(object),
+                          request.user, object.pk, force_unicode(object), message))
+        # FIXME: Remove this to disable logging into DB
+        admin.ModelAdmin.log_change(self, request, object, message)
+
+    def log_deletion(self, request, object, object_repr):
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("%s deleted via admin interface: user = %s , object_id = %s , object = %s" %
+                         (ContentType.objects.get_for_model(object),
+                          request.user, object.pk, object_repr))
+        # FIXME: Remove this to disable logging into DB
+        admin.ModelAdmin.log_deletion(self, request, object, object_repr)
+
 # Admin page for events
-class EventAdmin(admin.ModelAdmin):
+class EventAdmin(LoggingModelAdmin):
     list_display = ('display_name', 'venue', 'allowed_choice_num')
     search_fields = ['display_name', 'venue']
 
 # Admin page for courses
-class CourseAdmin(admin.ModelAdmin):
+class CourseAdmin(LoggingModelAdmin):
     list_display = ('event', 'display_name', 'is_open', 'change_allowed_date',
                     'start_date', 'end_date')
     search_fields = ['display_name']
@@ -105,7 +140,7 @@ class HasApplicationPermitFilter(SimpleListFilter):
             return queryset
 
 # Admin page for applications
-class ApplicationAdmin(admin.ModelAdmin):
+class ApplicationAdmin(LoggingModelAdmin):
     list_display = ('person', 'course', 'application_date', 'has_applicationpermit',
                     'approved', 'approved_by', 'approve_date')
     search_fields = ['person__username', 'course__display_name', 'approved_by__username']
@@ -122,7 +157,7 @@ class ApplicationAdmin(admin.ModelAdmin):
     has_applicationpermit.short_description = ugettext_lazy('permit')
 
 # Admin page for other application choices in this event
-class ApplicationChoicesAdmin(admin.ModelAdmin):
+class ApplicationChoicesAdmin(LoggingModelAdmin):
     list_display = ('person', 'event', 'choice_number', 'choice', 'last_update')
     search_fields = ['person__username', 'event__display_name', 'choice__display_name']
     list_filter = ['event', 'last_update']
@@ -130,7 +165,7 @@ class ApplicationChoicesAdmin(admin.ModelAdmin):
     ordering = ['person__id', '-event__id', 'choice']
 
 # Admin page for applicationpermits
-class ApplicationPermitAdmin(admin.ModelAdmin):
+class ApplicationPermitAdmin(LoggingModelAdmin):
     list_display = ('get_application_person', 'get_application_event',
                     'get_application_course', 'upload_date', 'file')
     search_fields = ['file']
@@ -170,7 +205,7 @@ class UserCommentInline(admin.StackedInline):
     extra=0
 
 # Define a new admin page for editing user details in order to use the inlines
-class UserAdmin(UserAdmin):
+class UserAdmin(UserAdmin, LoggingModelAdmin):
     inlines = (UserProfileInline, UserCommentInline)
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_active',
                     'is_staff', 'get_userprofile_company')

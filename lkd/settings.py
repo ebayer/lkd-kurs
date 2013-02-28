@@ -168,6 +168,14 @@ LOGGING = {
                 'backupCount': 5,
                 'formatter':'standard',
         },
+        'admin_filehandler': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': MEDIA_ROOT + 'kurs/logs/admin.log',
+            'maxBytes': 1024*1024*5, # 5 MB,
+            'backupCount': 5,
+            'formatter': 'standard',
+        },
         'kurs_filehandler': {
             'level':'DEBUG',
             'class':'logging.handlers.RotatingFileHandler',
@@ -191,6 +199,11 @@ LOGGING = {
         'kurs': {
             'handlers': ['kurs_filehandler'],
             'level': 'DEBUG',
+        },
+        'kurs.admin': {
+            'handlers': ['admin_filehandler'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
     }
 }
