@@ -11,6 +11,7 @@ from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext as _, ugettext_lazy
 from kurs.models import ApplicationPermit, UserProfile, Event, Course, \
     UserComment, Application, ApplicationChoices
+from django.utils.timezone import now as tz_aware_now
 import logging
 
 logger = logging.getLogger(__name__)
@@ -72,6 +73,7 @@ class CourseAdmin(LoggingModelAdmin):
             n = queryset.count()
             if n:
                 queryset.update(is_open = True if request.POST['status'] == 'True' else False)
+                # TODO: Log the change
                 self.message_user(request, _("Successfully changed %(count)d %(items)s.") % {
                     "count": n, "items": model_ngettext(self.opts, n)
                 })
@@ -147,6 +149,7 @@ class ApplicationAdmin(LoggingModelAdmin):
     date_hierarchy = 'application_date'
     ordering = ['person__id', '-application_date']
     inlines = [ApplicationPermitInline]
+    actions = ['change_application_approved']
 
     # We want to see if user has uploaded an applicationpermit when
     # listing all applications
@@ -154,6 +157,66 @@ class ApplicationAdmin(LoggingModelAdmin):
         return True if obj.applicationpermit else False
     has_applicationpermit.boolean = True
     has_applicationpermit.short_description = ugettext_lazy('permit')
+
+    # admin action to approve/reject a group of application
+    # used in list applications page (admin/kurs/application)
+    def change_application_approved(self, request, queryset):
+        # got from django.contrib.admin.actions
+        opts = self.model._meta
+        app_label = opts.app_label
+
+        if request.POST.get('post'):
+            n = queryset.count()
+            if n:
+                if request.POST['status'] == 'True':
+                    queryset.update(approved = True, approved_by=request.user, approve_date=tz_aware_now())
+
+                    if logger.isEnabledFor(logging.DEBUG):
+                        for application in queryset.all():
+                            logger.debug("Başvuru onaylandı: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                                         (application, request.user, request.META["REMOTE_ADDR"]))
+                    # FIXME: send email to application owners
+                else:
+                    queryset.update(approved = False, approved_by=None, approve_date=None)
+
+                    if logger.isEnabledFor(logging.DEBUG):
+                        for application in queryset.all():
+                            logger.debug("Başvuru reddedildi: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                                         (application, request.user, request.META["REMOTE_ADDR"]))
+                    # FIXME: send email to application owners
+
+                self.message_user(request, _("Successfully changed %(count)d %(items)s.") % {
+                    "count": n, "items": model_ngettext(self.opts, n)
+                })
+            # Return None to display the change list page again.
+            return None
+
+        title = _("Are you sure?")
+
+        if len(queryset) == 1:
+            objects_name = force_unicode(opts.verbose_name)
+        else:
+            objects_name = force_unicode(opts.verbose_name_plural)
+
+        courses = queryset.all()
+        editable_objects = []
+        for course in courses:
+            editable_objects.append(course.__unicode__())
+
+        context = {
+            "title": title,
+            "objects_name": objects_name,
+            "editable_objects": [editable_objects],
+            'queryset': queryset,
+            "opts": opts,
+            "app_label": app_label,
+            'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
+        }
+
+        # Display the confirmation page
+        return TemplateResponse(request, 'admin/change_application_approved.html',
+        context, current_app=self.admin_site.name)
+    change_application_approved.short_description = ugettext_lazy("Change approval status of the selected applications")
 
 # Admin page for other application choices in this event
 class ApplicationChoicesAdmin(LoggingModelAdmin):
