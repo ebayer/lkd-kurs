@@ -1,0 +1,7 @@
+{% load i18n %}
+{% load l10n %}
+{% blocktrans %}This email is sent to inform you that your application to the following course is {{ status_string }}.{% endblocktrans %}
+
+{% blocktrans %}
+Application: {{ application }}
+{% endblocktrans %}

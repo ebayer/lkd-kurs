@@ -1,17 +1,22 @@
 # coding=utf-8
 
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter, helpers
 from django.contrib.admin.util import model_ngettext
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites.models import RequestSite, Site
+from django.core.mail import send_mass_mail
+from django.template import Context
+from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_unicode
+from django.utils.timezone import now as tz_aware_now
 from django.utils.translation import ugettext as _, ugettext_lazy
 from kurs.models import ApplicationPermit, UserProfile, Event, Course, \
     UserComment, Application, ApplicationChoices
-from django.utils.timezone import now as tz_aware_now
 import logging
 
 logger = logging.getLogger(__name__)
@@ -170,24 +175,44 @@ class ApplicationAdmin(LoggingModelAdmin):
             if n:
                 if request.POST['status'] == 'True':
                     queryset.update(approved = True, approved_by=request.user, approve_date=tz_aware_now())
-
-                    if logger.isEnabledFor(logging.DEBUG):
-                        for application in queryset.all():
-                            logger.debug("Başvuru onaylandı: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
-                                         (application, request.user, request.META["REMOTE_ADDR"]))
-                    # FIXME: send email to application owners
+                    status_string = _("approved")
                 else:
                     queryset.update(approved = False, approved_by=None, approve_date=None)
+                    status_string = _("rejected")
+
+                # Log the change and send email to user
+                msg = []
+                for application in queryset.all():
 
                     if logger.isEnabledFor(logging.DEBUG):
-                        for application in queryset.all():
-                            logger.debug("Başvuru reddedildi: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
-                                         (application, request.user, request.META["REMOTE_ADDR"]))
-                    # FIXME: send email to application owners
+                        logger.debug("Başvuru %s: %s , request.user='%s' , request.META['REMOTE_ADDR']='%s'" %
+                                     (status_string, application, request.user,
+                                      request.META["REMOTE_ADDR"]))
 
+                    # Get the site name to display in mail subject
+                    if Site._meta.installed:
+                        site = Site.objects.get_current()
+                    else:
+                        site = RequestSite(request)
+
+                    # Prepeare email subject and body
+                    context = Context({'application': application.course,
+                                       'approval_date': application.approve_date,
+                                       'site': site.name,
+                                       'status_string': status_string})
+                    subject = render_to_string("admin/approval_email_subject.txt", context)
+                    body = render_to_string("admin/approval_email.txt", context)
+
+                    msg.append((subject, body, settings.DEFAULT_FROM_EMAIL, [application.person.email,]))
+
+                # Send mail for all changed applications in bulk
+                send_mass_mail(tuple(msg))
+
+                # Display a notification in admin page
                 self.message_user(request, _("Successfully changed %(count)d %(items)s.") % {
                     "count": n, "items": model_ngettext(self.opts, n)
                 })
+
             # Return None to display the change list page again.
             return None
 

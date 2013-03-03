@@ -1,0 +1,1 @@
+{% load i18n %}{% load l10n %}{% blocktrans %}Application {{ status_string }} on {{ site }}{% endblocktrans %}
