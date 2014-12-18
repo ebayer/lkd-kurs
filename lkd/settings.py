@@ -13,7 +13,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/mnt/yedek/ebayer/yedek/workspace/repos/git/lkd-kurs/sqlite.db',                      # Or path to database file if using sqlite3.
+        'NAME': '/root/lkd-kurs/sqlite.db', # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -54,7 +54,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/home/ebayer/django-media-files/'
+MEDIA_ROOT = '/root/lkd-kurs/django-media-files/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -76,7 +76,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/ebayer/workspace/repos/git/lkd-kurs/kurs/static',
+    '/root/lkd-kurs/kurs/static',
 )
 
 # List of finder classes that know how to find static files in
@@ -117,7 +117,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/ebayer/workspace/repos/git/lkd-kurs/kurs/templates',
+    '/root/lkd-kurs/kurs/templates',
 )
 
 INSTALLED_APPS = (
