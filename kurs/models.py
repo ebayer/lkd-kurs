@@ -4,23 +4,24 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.dispatch import receiver
-from registration.signals import user_registered
 from django.db.models.signals import pre_delete
 from django.utils.timezone import now as tz_aware_now
 from django import forms
 from django.template.defaultfilters import filesizeformat
+from userena.models import UserenaBaseProfile
+from userena.signals import signup_complete
 import magic
 
 class Event(models.Model):
     class Meta:
         verbose_name = _('event')
         verbose_name_plural = _('events')
-    
+
     display_name = models.CharField(verbose_name=_('display name'), max_length=200)
     allowed_choice_num = models.IntegerField(verbose_name=_('number of allowed user choices for this event'),
                                              default=2)
     venue = models.CharField(verbose_name=_('venue'), max_length=200)
-    
+
     def __unicode__(self):
         return self.display_name
 
@@ -28,11 +29,11 @@ class Course(models.Model):
     class Meta:
         verbose_name = _("course")
         verbose_name_plural = _("courses")
-    
+
     event = models.ForeignKey(Event, verbose_name=_('event'))
     display_name = models.CharField(verbose_name=_('display name'), max_length=200)
     description = models.TextField(verbose_name=_('description'))
-    is_open = models.BooleanField(verbose_name=_('is applicable'))
+    is_open = models.BooleanField(verbose_name=_('is applicable'), default=False)
     change_allowed_date = models.DateTimeField(verbose_name=_('deadline for user application'))
     agreement = models.TextField(verbose_name=_('prerequisites'))
     start_date = models.DateField(verbose_name=_('start date'))
@@ -180,7 +181,7 @@ class UserComment(models.Model):
     class Meta:
         verbose_name = _('comment')
         verbose_name_plural = _('comments')
-        
+
     user = models.ForeignKey(User, verbose_name=_('user'))
     comment = models.TextField(verbose_name=_('comment'))
     date = models.DateTimeField(verbose_name=_('date'),
@@ -191,35 +192,9 @@ class UserComment(models.Model):
 
 # Custom user profile in order to extend the standart User object that
 # django.contrib.auth uses
-class UserProfile(models.Model):
+class UserProfile(UserenaBaseProfile):
     user = models.OneToOneField(User, unique=True, verbose_name=_('user'), related_name='my_profile')
     company = models.CharField(verbose_name=_('company'), max_length=30)
     contact_address = models.TextField(verbose_name=_('contact address'))
     mobile = models.CharField(verbose_name=_('mobile'), max_length=10, help_text=_('ie. 2165554433'))
     phone = models.CharField(verbose_name=_('phone'), max_length=10, help_text=_('ie. 2165554433'))
-
-# When a new user is registered, create his profile too
-# Profile of a user can not be empty since we gather this information
-# and write to DB at registration time with RegistrationFormUniqueEmailwithProfile
-@receiver(user_registered)
-# user_registered signal provides user and request instances
-def create_profile(sender, user, request, **kwargs):
-    user.first_name=request.POST['first_name']
-    user.last_name=request.POST['last_name']
-    user.save()
-    (profile, created) = UserProfile.objects.get_or_create(user=user)
-    profile.company = request.POST['company']
-    profile.contact_address = request.POST['contact_address']
-    profile.mobile = request.POST['mobile']
-    profile.phone = request.POST['phone']
-    profile.save()
-
-# Edit profile page used by the django-profiles module requires
-# request.username to be present. This view gets the username
-# from the url. However we do not want users to see each others profiles
-# so here we limit the username to only the username of the current user
-# and change the urlconf to not pass username as a parameter
-def get_absolute_url(self):
-        return ('profiles_profile_detail', (), { 'username': self.user.username })
-
-get_absolute_url = models.permalink(get_absolute_url)

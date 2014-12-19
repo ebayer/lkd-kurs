@@ -131,8 +131,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'registration',
-    'profiles',
+    'userena',
+    'guardian',
+    'easy_thumbnails',
     'kurs',
 )
 
@@ -208,11 +209,18 @@ LOGGING = {
     }
 }
 
-# These settings are for django-registration
+# These settings are for django-userena
 AUTH_PROFILE_MODULE = 'kurs.UserProfile'
-ACCOUNT_ACTIVATION_DAYS = 7
-LOGIN_REDIRECT_URL='/kurs/'
-REGISTRATION_OPEN=True
+ANONYMOUS_USER_ID = -1
+USERENA_SIGNIN_REDIRECT_URL = '/kurs/'
+USERENA_ACTIVATION_DAYS = 7
+USERENA_USE_HTTPS = False
+USERENA_DEFAULT_PRIVACY = 'closed'
+USERENA_DISABLE_SIGNUP = False
+USERENA_WITHOUT_USERNAMES = True
+LOGIN_URL = '/accounts/signin/'
+LOGOUT_URL = '/accounts/signout/'
+LOGIN_REDIRECT_URL = '/kurs/'
 
 # Dummy SMTP Server
 # use the following command to test email
@@ -233,3 +241,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "django.core.context_processors.request",
 )
+
+AUTHENTICATION_BACKENDS = (
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'

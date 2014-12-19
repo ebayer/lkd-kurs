@@ -7,8 +7,8 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
 <meta name="description" content="description"/>
-<meta name="keywords" content="keywords"/> 
-<meta name="author" content="author"/> 
+<meta name="keywords" content="keywords"/>
+<meta name="author" content="author"/>
 <link rel="stylesheet" type="text/css" href="/static/kurs/css/default.css" media="screen"/>
 <title>{% block title %}LKD Kurs Kayıt Yazılımı{% endblock %}</title>
 </head>
@@ -16,18 +16,18 @@
 <body>
 
 <div class="container">
-	
+
 	<div class="main">
 
 		<div class="header">
-		
+
 			<div class="title">
 				<h1>LKD Kurs Kayıt Yazılımı</h1>
 			</div>
 
 		</div>
-		
-		<div class="content">	
+
+		<div class="content">
 			{% if messages %}
     			{% for message in messages %}
     				<div{% if message.tags %} class="{{ message.tags }}"{% endif %}>
@@ -40,7 +40,7 @@
 				{% block content %} {% endblock %}
 			</div>
 		</div>
-		
+
 		<div class="sidenav">
 		<form action="/i18n/setlang/" method="post">
 			{% csrf_token %}
@@ -59,9 +59,9 @@
 			<ul>
 				<li><a href="/kurs/">{% trans "Main page" %}</a></li>
 				<li><a href="/kurs/etkinlik/">{% trans "Events" %}</a></li>
-				<li><a href="/profile/">{% trans "Profile" %}</a></li>
+				<li><a href="/accounts/">{% trans "Profile" %}</a></li>
 				<li><a href="/kurs/basvurular/">{% trans "Previous applications" %}</a></li>
-				<li><a href="{% url auth_logout %}">{% trans "Logout" %}</a></li>
+				<li><a href="/accounts/signout/">{% trans "Logout" %}</a></li>
 			</ul>
 
 			{% if user.is_staff %}
@@ -70,24 +70,19 @@
 				<li><a href="/admin/">{% trans "Admin interface" %}</a></li>
 			</ul>
 			{% endif %}
-			
+
 		{% else %}
 			<h1>{% trans "You are not logged in." %}</h1>
 			<ul>
 				<li><a href="/kurs/">{% trans "Main page" %}</a></li>
 				<li><a href="/kurs/etkinlik/">{% trans "Events" %}</a></li>
-				<li><a href="{% url auth_login %}?next=
-				{% if '/accounts/' in request.path  %}/kurs/
-				{% else %}
-				{% firstof request.path '/' %}
-				{% endif %}
-				">{% trans "Login" %}</a></li>
-				<li><a href="{% url registration_register %}">{% trans "Register" %}</a></li>
+				<li><a href="/accounts/signin/">{% trans "Login" %}</a></li>
+				<li><a href="/accounts/signup/">{% trans "Register" %}</a></li>
 			</ul>
 		{% endif %}
 
 		</div>
-	
+
 		<div class="clearer"><span></span></div>
 
 	</div>
